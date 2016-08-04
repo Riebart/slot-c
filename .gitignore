@@ -1,5 +1,6 @@
 .hg*
 .vs*
+*pyc
 
 static-content/assets/js/constants.js
 s3_bucket_name.private

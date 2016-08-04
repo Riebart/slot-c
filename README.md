@@ -5,6 +5,14 @@ To deploy:
 - Install and configure boto3 for your AWS account, ensure it has permissions to deploy Cloudformation stacks, including creating new IAM resources.
 - Make sure that the value of the TemplateContents.S3Bucket parameter in deploy_config.json is the name of a file whose contents is the name of an existing S3 bucket for which you have write permissions.
   > It is done this way to prevent private information (bucket names, etc...) from being tracked in repositories.
+- Once deployed, navigate to the HTTPS URL for the `index.html` in the S3 bucket created as part of the stack.
+  > The URL will look something like: `https://<S3RegionURLPart>.amazonaws.com/<BucketName>/index.html`
+  > For *us-east-1* (also called *US Standard*), the region part is `s3`, for all other regions, it is `s3-<region>`. [Ref](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html)
+  > To find the bucket name using the AWS cli:
+  
+  ```
+  aws cloudformation describe-stack-resource --stack-name <StackName> --logical-resource-id StaticContentBucket --query StackResourceDetail.PhysicalResourceId
+  ```
 
 To create a new stack: 
 

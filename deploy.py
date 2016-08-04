@@ -181,41 +181,43 @@ def update_stack(config, args, cfn):
     resp = cfn.update_stack(**template_kwargs(config))
     print json.dumps(resp, indent=4)
 
-parser = argparse.ArgumentParser(description="""
-Create or update a stack with appropriate static content in the S3 bucket and priming DynamoDB table items
-""")
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="""
+    Create or update a stack with appropriate static content in the S3 bucket and priming DynamoDB table items
+    """)
 
-subparsers = parser.add_subparsers()
-nop_parser = subparsers.add_parser("no-stack-op", help="Perform only epilogue functions on an existing stack.")
-nop_parser.add_argument("--stack-name", default=None, required=True,
-                        help="Stack name to update with new template, code, and static content.")
-nop_parser.set_defaults(stack_parameters=None)
-nop_parser.set_defaults(callback=nop_stack, subcommand="nop-stack")
+    subparsers = parser.add_subparsers()
+    nop_parser = subparsers.add_parser("no-stack-op", help="Perform only epilogue functions on an existing stack.")
+    nop_parser.add_argument("--stack-name", default=None, required=True,
+                            help="Stack name to update with new template, code, and static content.")
+    nop_parser.set_defaults(stack_parameters=None)
+    nop_parser.set_defaults(callback=nop_stack, subcommand="nop-stack")
 
-create_parser = subparsers.add_parser("create-stack", help="Create a new stack with an optional given stack name and parameters.")
-create_parser.add_argument("--stack-name", default=None, required=False,
-                           help="Stack name to update with new template, code, and static content.")
-create_parser.add_argument("--stack-parameters", default=None, action=JSONArg,
-                           help="Parameters for stack update/creation, given as a JSON dictionary of keys and string values. If a value is null, then the previous value is used.")
-create_parser.set_defaults(callback=create_stack, subcommand="create-stack")
+    create_parser = subparsers.add_parser("create-stack", help="Create a new stack with an optional given stack name and parameters.")
+    create_parser.add_argument("--stack-name", default=None, required=False,
+                               help="Stack name to update with new template, code, and static content.")
+    create_parser.add_argument("--stack-parameters", default=None, action=JSONArg,
+                               help="Parameters for stack update/creation, given as a JSON dictionary of keys and string values. If a value is null, then the previous value is used.")
+    create_parser.set_defaults(callback=create_stack, subcommand="create-stack")
 
-update_parser = subparsers.add_parser("update-stack", help="Update an existing stack, if possible, with a given name.")
-update_parser.add_argument("--stack-name", default=None, required=True,
-                           help="Stack name to update with new template, code, and static content.")
-update_parser.add_argument("--stack-parameters", default=None, action=JSONArg,
-                           help="Parameters for stack update/creation, given as a JSON dictionary of keys and string values. If a value is null, then the previous value is used.")
-update_parser.set_defaults(callback=update_stack, subcommand="update-stack")
+    update_parser = subparsers.add_parser("update-stack", help="Update an existing stack, if possible, with a given name.")
+    update_parser.add_argument("--stack-name", default=None, required=True,
+                               help="Stack name to update with new template, code, and static content.")
+    update_parser.add_argument("--stack-parameters", default=None, action=JSONArg,
+                               help="Parameters for stack update/creation, given as a JSON dictionary of keys and string values. If a value is null, then the previous value is used.")
+    update_parser.set_defaults(callback=update_stack, subcommand="update-stack")
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-config, cfn = prologue(args)
+    config, cfn = prologue(args)
+    print "Stack name: %s" % config['StackName']
 
-print "Performing stack operation (%s)..." % args.subcommand
-args.callback(config, args, cfn)
+    print "Performing stack operation (%s)..." % args.subcommand
+    args.callback(config, args, cfn)
 
-print "Waiting for stack to be green..."
-if wait_for_green_stack(config['StackName'], cfn):
-    print "Performing epilogue..."
-    epilogue(config, args, cfn)
-else:
-    print "Stack never reached green state."
+    print "Waiting for stack to be green..."
+    if wait_for_green_stack(config['StackName'], cfn):
+        print "Performing epilogue..."
+        epilogue(config, args, cfn)
+    else:
+        print "Stack never reached green state."
