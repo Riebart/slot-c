@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Serverless Open Threaded Chat Webapp</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/stylesheet.css" type="text/css" charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.js"></script>
+    <!-- This is the file that contains the API gateway endpoint and default channel name -->
+    <script src="assets/js/constants.js"></script>
+    <!-- Angularjs app and controllers -->
+    <script src="app/app.js"></script>
+    <script src="app/controllers/chatMessageController.js"></script>
+    <script src="app/controllers/chatPanelController.js"></script>
+    <script src="app/controllers/talkersPanelController.js"></script>
+    <script src="app/controllers/channelListController.js"></script>
+    <script src="app/controllers/loginController.js"></script>
+</head>
+<body ng-app="chatApp">
+    <header>
+        <div id="square"></div>
+        <img id="logo" src="assets/images/logo.svg"/img style="padding-left:3em; padding-right:1em;">
+        <div id="main-header"><img src="assets/images/title.svg"></div>
+        <img id="org-logo" src="assets/images/org-logo.svg"/img>
+    </header>
+    <div id="wrapper">
+        <!-- ***********************************************************
+
+            Panel and control (usernameSectionCtrl) for entering in username/logging in.
+
+             ***********************************************************  -->
+        <div ng-controller="usernameSectionCtrl" id="username">
+            <div id="screenNameDiv">
+                <p>
+                    <img src="assets/images/username.svg"/img>
+                    <input ng-disabled="chatting" id="name-input" type="text" placeholder="Enter user name">
+                </p>
+                <p>
+                    <input ng-click="toggleChatting()" id="chat-toggle"
+                           type="button" value="Start Chatting" />
+                </p>
+            </div>
+        </div>
+        <div class="panel-info-chatbox">
+            <div id="chat-message-channel-container">
+                <!-- ***********************************************************
+
+                 Panel and control (chatPanelCtrl) for displaying the chat messages.
+
+                ***********************************************************  -->
+                <div ng-controller="chatPanelCtrl" class="panel-body" id="chat-body">
+                    <table style="border-collapse: separate; border-spacing: 5px;">
+                        <tr id="message-items" data-ng-repeat="message in messages[channel]">
+                            <!-- Non-breaking hyphen and space to prevent timestamp wrapping on long message lines -->
+                            <td style="vertical-align:top;">
+                                {{message.timestamp | date:'yyyy&#8209;MM&#8209;dd&nbsp;HH:mm:ss&nbsp;Z'}} &nbsp;
+                            </td>
+                            <td ng-class="{'user-source': message.source === 'user','server-source': message.source === 'server'}">
+                                {{message.participant}}
+                            </td>
+                            <td ng-class="{'user-message': message.source === 'user','server-message': message.source === 'server'}">
+                                {{message.message}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span data-ng-click="GetMoreHistory()"
+                                      data-ng-show="more_history[channel]">
+                                    <a href="">Load more history</a>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div ng-controller="channelListCtrl" id="channel-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th id="channel-list-header">
+                                    Channels
+                                </th>
+                            </tr>
+                        </thead>
+                        <tr id="default-channel-item" data-ng-repeat="channel in defaultChannel">
+                            <td>{{channel}}</td>
+                        </tr>
+                        <tr id="channel-items" data-ng-repeat="channel in channels"
+                            style="border-bottom-style:dotted;
+                                   border-color:gray;">
+                            <td data-ng-click="ChangeChannel(channel)">
+                                {{channel}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- ***********************************************************
+
+             Panel and control (talkersPanelCtrl) for displaying the chat messages.
+
+            ***********************************************************  -->
+            <div ng-controller="talkersPanelCtrl" class="panel-body">
+                <div id="talkers-body">
+                    Users Typing: &nbsp
+                    <div id="talkers-items" data-ng-repeat="talker in talkers">
+                        {{ talker }}&nbsp;
+                    </div>
+                </div>
+            </div>
+            <!-- ***********************************************************
+
+              Panel and control (chatMessageCtrl) for displaying the chat messages.
+
+             ***********************************************************  -->
+            <div ng-controller="chatMessageCtrl" class="form">
+                <div class="form-group">
+                    <input type="text"
+                           ng-keypress="chatMessageKeyPressed($event)"
+                           ng-model="chatMessage"
+                           ng-disabled="!chatting"
+                           class="form-control"
+                           id="chat-message-input"
+                           placeholder="Save your brains, enter your user name">
+                </div>
+                Type <i>/help</i> to see a list of supported slash-commands.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

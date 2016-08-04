@@ -1,0 +1,77 @@
+{
+    "StackNamePrefix": "SLOTC",
+    "TemplateContents": {
+        "FileName": "slot-c.template",
+        "S3Bucket": "s3_bucket_name.private"
+    },
+    "StackOperationConfig": {
+        "Capabilities": [ "CAPABILITY_IAM" ]
+    },
+    "BaseStackParameters": { },
+    "LambdaFunctions": {
+        "GetMessages": {
+            "CodeFiles": [
+                [ "GetMessages.py", "index.py" ]
+            ],
+            "Publish": true,
+            "Alias": "Deployed"
+        },
+        "PostMessage": {
+            "CodeFiles": [
+                [ "PostMessage.py", "index.py" ]
+            ],
+            "Publish": true,
+            "Alias": "Deployed"
+        },
+        "GetParticipants": {
+            "CodeFiles": [
+                [ "GetParticipants.py", "index.py" ]
+            ],
+            "Publish": true,
+            "Alias": "Deployed"
+        },
+        "PostParticipant": {
+            "CodeFiles": [
+                [ "PostParticipant.py", "index.py" ]
+            ],
+            "Publish": true,
+            "Alias": "Deployed"
+        },
+        "GetChannels": {
+            "CodeFiles": [
+                [ "GetChannels.py", "index.py" ]
+            ],
+            "Publish": true,
+            "Alias": "Deployed"
+        },
+        "PostChannel": {
+            "CodeFiles": [
+                [ "PostChannel.py", "index.py" ]
+            ],
+            "Publish": true,
+            "Alias": "Deployed"
+        }
+    },
+    "CustomEpilogue": [
+        {
+            "Service": [ "cloudformation" ],
+            "Name": "Update JavaScript constants files",
+            "Code": [
+                "api_id = cloudformation.describe_stack_resource(StackName='{{STACKNAME}}', LogicalResourceId='API')['StackResourceDetail']['PhysicalResourceId']",
+                "fp = open('static-content/assets/js/constants.js','w')",
+                "fp.write('var DEFAULT_CHANNEL_NAME = \\'General\\';\\n')",
+                "fp.write('var API_ENDPOINT = \\'https://%s.execute-api.us-east-1.amazonaws.com/Main\\';\\n' % api_id)",
+                "fp.close()"
+            ]
+        },
+        {
+            "Service": [ "s3", "cloudformation" ],
+            "Name": "Upload static website content to S3 bucket.",
+            "Code": [
+                "import os",
+                "s3_bucket = cloudformation.describe_stack_resource(StackName='{{STACKNAME}}', LogicalResourceId='StaticContentBucket')['StackResourceDetail']['PhysicalResourceId']",
+                "[ [s3.put_object(**{'Bucket':s3_bucket, 'Body':open(r+'/'+i,'r'), 'Key': (r.replace('static-content','') + '/' + i)[1:]}) for i in f ] for r, d, f in os.walk('static-content') ]"
+            ]
+        }
+    ]
+}

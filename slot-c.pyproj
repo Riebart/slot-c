@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{a6aea333-b7b3-4581-be57-1213b4c894db}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>deploy.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+    <Name>slot-c</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="deploy.py" />
+    <Compile Include="GetChannels.py" />
+    <Compile Include="GetMessages.py" />
+    <Compile Include="GetParticipants.py" />
+    <Compile Include="PostChannel.py" />
+    <Compile Include="PostMessage.py" />
+    <Compile Include="PostParticipant.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".hg\last-message.txt" />
+    <Content Include="deploy_config.json" />
+    <Content Include="static-content\app\app.js" />
+    <Content Include="static-content\app\controllers\channelListController.js" />
+    <Content Include="static-content\app\controllers\chatMessageController.js" />
+    <Content Include="static-content\app\controllers\chatPanelController.js" />
+    <Content Include="static-content\app\controllers\loginController.js" />
+    <Content Include="static-content\app\controllers\talkersPanelController.js" />
+    <Content Include="static-content\assets\css\stylesheet.css" />
+    <Content Include="static-content\assets\images\logo.svg" />
+    <Content Include="static-content\assets\images\org-logo.svg" />
+    <Content Include="static-content\assets\images\title.svg" />
+    <Content Include="static-content\assets\images\username.svg" />
+    <Content Include="static-content\assets\js\constants.js" />
+    <Content Include="static-content\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".hg" />
+    <Folder Include="static-content" />
+    <Folder Include="static-content\app" />
+    <Folder Include="static-content\app\controllers" />
+    <Folder Include="static-content\assets\" />
+    <Folder Include="static-content\assets\css" />
+    <Folder Include="static-content\assets\images" />
+    <Folder Include="static-content\assets\js" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>

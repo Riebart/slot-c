@@ -1,0 +1,3104 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "AWS CloudFormation template to launch resources for a serverless group chat. This is based on the AWS Lambda zombie workshop.",
+  "Parameters": {
+    "DynamoCapacity": {
+      "Type": "List<Number>",
+      "Default": "1,1,1,1",
+      "Description": "Capacity provisioned for the DynamoDB tables: Messages-Read, Messages-Write, Participants-Read, Participants-Write"
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Designer": {
+      "683fa937-ac37-43fd-a49a-dc91e4873a6c": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 730,
+          "y": 110
+        },
+        "z": 0,
+        "embeds": [],
+        "isassociatedwith": [
+          "f79935c8-d275-4935-b878-dcb6a5e911bb"
+        ]
+      },
+      "2fec3394-d337-4809-bbd5-17cacc209e4a": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 600,
+          "y": 300
+        },
+        "z": 0,
+        "embeds": []
+      },
+      "ec8f997e-bae1-40f0-8e4a-329c413c88ae": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 620,
+          "y": 130
+        },
+        "z": 0,
+        "embeds": []
+      },
+      "b95b8d56-35ef-4701-b35e-e322f7e77e43": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 230,
+          "y": 130
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0"
+        ]
+      },
+      "ee16ba16-b8f1-46e3-8d44-01e54ebcf161": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 230,
+          "y": 60
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0"
+        ]
+      },
+      "e5049c33-2588-4394-821c-34d483fcb2ce": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 230,
+          "y": 200
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0"
+        ]
+      },
+      "2c439c42-e216-4739-b87c-4a69f67f3ec7": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 230,
+          "y": 270
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0"
+        ]
+      },
+      "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 520,
+          "y": 270
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae"
+        ]
+      },
+      "f79935c8-d275-4935-b878-dcb6a5e911bb": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 730,
+          "y": 230
+        },
+        "z": 0,
+        "embeds": []
+      },
+      "8ff45629-4c0b-4cd4-b9b4-957bf2d72214": {
+        "size": {
+          "width": 570,
+          "height": 710
+        },
+        "position": {
+          "x": -390,
+          "y": -130
+        },
+        "z": 0,
+        "embeds": [
+          "3eb6822a-7a9d-45f6-8a2f-dc40cef5a4d7",
+          "97129ae7-c998-4e4a-9641-1b7f5133965e",
+          "29e81798-24f1-4ef7-ab55-9b04a1e995c9",
+          "b1f79872-55a9-491b-a8b8-bdc0e86cf4e8",
+          "ccf00a6c-2bf6-44c1-97db-f8a9ffdd7421",
+          "029c8409-9014-418f-894b-0fe42efa5113",
+          "6c032d82-53c1-4a86-81c9-69397feef307",
+          "3f794aaa-da1f-40cf-8601-8d32ac2d567c",
+          "2618ca7d-5bb9-4e4f-ab3a-8609254d014e",
+          "c8471db7-bc50-4df6-a102-a537fea0177d",
+          "2a862f9d-c8f6-4f54-95c6-4eb22a480e53",
+          "1843ed59-c351-4841-bc7c-6507197e65cb",
+          "f78d070f-c357-4ada-a821-5e53763e31ee",
+          "85f19548-852a-441a-ada9-9a4ecba5308d",
+          "0aca1de9-564b-42d8-a244-260b75694635",
+          "9b12da9f-59bc-4096-9fab-e58cfebd1718",
+          "f0e2b60b-3373-42ce-9284-9caf8219007c"
+        ]
+      },
+      "6c032d82-53c1-4a86-81c9-69397feef307": {
+        "size": {
+          "width": 190,
+          "height": 200
+        },
+        "position": {
+          "x": -370,
+          "y": -90
+        },
+        "z": 1,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isassociatedwith": [
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "29e81798-24f1-4ef7-ab55-9b04a1e995c9": {
+        "size": {
+          "width": 290,
+          "height": 150
+        },
+        "position": {
+          "x": -160,
+          "y": -70
+        },
+        "z": 1,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isassociatedwith": [
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "85f19548-852a-441a-ada9-9a4ecba5308d": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -340,
+          "y": -50
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "2c439c42-e216-4739-b87c-4a69f67f3ec7"
+        ]
+      },
+      "0aca1de9-564b-42d8-a244-260b75694635": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -250,
+          "y": -50
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "e5049c33-2588-4394-821c-34d483fcb2ce"
+        ]
+      },
+      "c8471db7-bc50-4df6-a102-a537fea0177d": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -300,
+          "y": 30
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a"
+        ]
+      },
+      "9b12da9f-59bc-4096-9fab-e58cfebd1718": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -130,
+          "y": -40
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "ee16ba16-b8f1-46e3-8d44-01e54ebcf161"
+        ]
+      },
+      "f0e2b60b-3373-42ce-9284-9caf8219007c": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -40,
+          "y": -40
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "b95b8d56-35ef-4701-b35e-e322f7e77e43"
+        ]
+      },
+      "029c8409-9014-418f-894b-0fe42efa5113": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 40,
+          "y": -40
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a"
+        ]
+      },
+      "41ff6095-15cc-488c-9864-c359ec8775e1": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -540,
+          "y": 140
+        },
+        "z": 0,
+        "embeds": [],
+        "isassociatedwith": [
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ],
+        "dependson": [
+          "85f19548-852a-441a-ada9-9a4ecba5308d",
+          "0aca1de9-564b-42d8-a244-260b75694635",
+          "c8471db7-bc50-4df6-a102-a537fea0177d",
+          "9b12da9f-59bc-4096-9fab-e58cfebd1718",
+          "f0e2b60b-3373-42ce-9284-9caf8219007c",
+          "029c8409-9014-418f-894b-0fe42efa5113",
+          "1843ed59-c351-4841-bc7c-6507197e65cb",
+          "2a862f9d-c8f6-4f54-95c6-4eb22a480e53",
+          "97129ae7-c998-4e4a-9641-1b7f5133965e",
+          "73ea8d42-a481-4401-8031-52d9e9da5617",
+          "2978aee4-be10-43d5-9db0-5b50615d64f3",
+          "f78d070f-c357-4ada-a821-5e53763e31ee",
+          "2618ca7d-5bb9-4e4f-ab3a-8609254d014e"
+        ]
+      },
+      "e47a0fe8-1472-4da5-8098-a8fd99ae3f35": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 300,
+          "y": -80
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "c4fc4245-f1f6-4986-bdcb-2ea825c3cd42"
+        ],
+        "isrelatedto": [
+          "ee16ba16-b8f1-46e3-8d44-01e54ebcf161",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "ee521de5-21d9-4715-aec8-2ad26138b837": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 200,
+          "y": -130
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "b95b8d56-35ef-4701-b35e-e322f7e77e43",
+          "749a6ec3-7299-411c-aa73-c4a2b7866abc"
+        ],
+        "isrelatedto": [
+          "b95b8d56-35ef-4701-b35e-e322f7e77e43",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "e88944e6-5b42-4eaf-a2d7-41259f48c258": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 210,
+          "y": 370
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "c1486558-9a88-4079-96ed-3aa9d05586c0"
+        ],
+        "isrelatedto": [
+          "e5049c33-2588-4394-821c-34d483fcb2ce",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "7b90921d-3039-4ae6-a83a-90e98703554b": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 320,
+          "y": 360
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "81ce979c-9d30-48ed-932d-a053696062cb"
+        ],
+        "isrelatedto": [
+          "2c439c42-e216-4739-b87c-4a69f67f3ec7",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "c4fc4245-f1f6-4986-bdcb-2ea825c3cd42": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 380,
+          "y": 60
+        },
+        "z": 0,
+        "embeds": [],
+        "references": [
+          "ee16ba16-b8f1-46e3-8d44-01e54ebcf161"
+        ]
+      },
+      "749a6ec3-7299-411c-aa73-c4a2b7866abc": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 380,
+          "y": 130
+        },
+        "z": 0,
+        "embeds": [],
+        "references": [
+          "b95b8d56-35ef-4701-b35e-e322f7e77e43"
+        ]
+      },
+      "c1486558-9a88-4079-96ed-3aa9d05586c0": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 380,
+          "y": 200
+        },
+        "z": 0,
+        "embeds": [],
+        "references": [
+          "e5049c33-2588-4394-821c-34d483fcb2ce"
+        ]
+      },
+      "81ce979c-9d30-48ed-932d-a053696062cb": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 380,
+          "y": 270
+        },
+        "z": 0,
+        "embeds": [],
+        "references": [
+          "2c439c42-e216-4739-b87c-4a69f67f3ec7"
+        ]
+      },
+      "3eb6822a-7a9d-45f6-8a2f-dc40cef5a4d7": {
+        "size": {
+          "width": 230,
+          "height": 190
+        },
+        "position": {
+          "x": -360,
+          "y": 140
+        },
+        "z": 1,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isassociatedwith": [
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "1843ed59-c351-4841-bc7c-6507197e65cb": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -342.48587859517284,
+          "y": 175.74875910608478
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "30f39fe4-f353-4c6b-a6bb-8d0f956e811f"
+        ]
+      },
+      "2a862f9d-c8f6-4f54-95c6-4eb22a480e53": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -231.8385730747635,
+          "y": 172.71732607812837
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "0ac770a4-bb9d-45db-a323-3b06ba93b7ec"
+        ]
+      },
+      "97129ae7-c998-4e4a-9641-1b7f5133965e": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -300.045816203783,
+          "y": 246.98743526306066
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": []
+      },
+      "30f39fe4-f353-4c6b-a6bb-8d0f956e811f": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 480,
+          "y": -130
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0"
+        ]
+      },
+      "0ac770a4-bb9d-45db-a323-3b06ba93b7ec": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 480,
+          "y": -210
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0"
+        ]
+      },
+      "0b2e5067-0ede-49ee-b789-8bce253d135f": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 570,
+          "y": -130
+        },
+        "z": 0,
+        "embeds": [],
+        "references": [
+          "30f39fe4-f353-4c6b-a6bb-8d0f956e811f"
+        ]
+      },
+      "d3a66863-7453-46cf-8b8b-10a462d7e208": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 570,
+          "y": -210
+        },
+        "z": 0,
+        "embeds": [],
+        "references": [
+          "0ac770a4-bb9d-45db-a323-3b06ba93b7ec"
+        ]
+      },
+      "4af835de-84a9-4b23-be37-c5b746d2eaf4": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 660,
+          "y": -130
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "0b2e5067-0ede-49ee-b789-8bce253d135f"
+        ],
+        "isrelatedto": [
+          "30f39fe4-f353-4c6b-a6bb-8d0f956e811f",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "4d5d0feb-48ea-4b9b-a638-47d3413ca78a": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 660,
+          "y": -210
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "d3a66863-7453-46cf-8b8b-10a462d7e208"
+        ],
+        "isrelatedto": [
+          "0ac770a4-bb9d-45db-a323-3b06ba93b7ec",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "b1f79872-55a9-491b-a8b8-bdc0e86cf4e8": {
+        "size": {
+          "width": 140,
+          "height": 140
+        },
+        "position": {
+          "x": 20,
+          "y": 360
+        },
+        "z": 1,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isassociatedwith": [
+          "29e81798-24f1-4ef7-ab55-9b04a1e995c9"
+        ]
+      },
+      "ccf00a6c-2bf6-44c1-97db-f8a9ffdd7421": {
+        "size": {
+          "width": 230,
+          "height": 120
+        },
+        "position": {
+          "x": -230,
+          "y": 380
+        },
+        "z": 1,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [
+          "2978aee4-be10-43d5-9db0-5b50615d64f3",
+          "73ea8d42-a481-4401-8031-52d9e9da5617"
+        ],
+        "isassociatedwith": [
+          "b1f79872-55a9-491b-a8b8-bdc0e86cf4e8"
+        ]
+      },
+      "73ea8d42-a481-4401-8031-52d9e9da5617": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -200,
+          "y": 410
+        },
+        "z": 2,
+        "parent": "ccf00a6c-2bf6-44c1-97db-f8a9ffdd7421",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "ee16ba16-b8f1-46e3-8d44-01e54ebcf161"
+        ]
+      },
+      "2978aee4-be10-43d5-9db0-5b50615d64f3": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -80,
+          "y": 420
+        },
+        "z": 2,
+        "parent": "ccf00a6c-2bf6-44c1-97db-f8a9ffdd7421",
+        "embeds": []
+      },
+      "38277468-78b4-421c-a903-bc536157583d": {
+        "source": {
+          "id": "41ff6095-15cc-488c-9864-c359ec8775e1"
+        },
+        "target": {
+          "id": "73ea8d42-a481-4401-8031-52d9e9da5617"
+        },
+        "z": 11
+      },
+      "d11e746f-80cf-4c57-b979-5e4ec5f46e97": {
+        "source": {
+          "id": "41ff6095-15cc-488c-9864-c359ec8775e1"
+        },
+        "target": {
+          "id": "2978aee4-be10-43d5-9db0-5b50615d64f3"
+        },
+        "z": 12
+      },
+      "1c783053-5cec-4eb5-977b-66c6d10ac0f6": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 290,
+          "y": -160
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "c4fc4245-f1f6-4986-bdcb-2ea825c3cd42"
+        ],
+        "isrelatedto": [
+          "ee16ba16-b8f1-46e3-8d44-01e54ebcf161",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        ]
+      },
+      "14c7a0d6-122c-4e1f-bc57-b338485739cb": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 370,
+          "y": -180
+        },
+        "z": 0,
+        "embeds": [],
+        "dependson": [
+          "81ce979c-9d30-48ed-932d-a053696062cb"
+        ],
+        "isrelatedto": [
+          "30f39fe4-f353-4c6b-a6bb-8d0f956e811f",
+          "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+          "2c439c42-e216-4739-b87c-4a69f67f3ec7"
+        ]
+      },
+      "3f794aaa-da1f-40cf-8601-8d32ac2d567c": {
+        "size": {
+          "width": 260,
+          "height": 130
+        },
+        "position": {
+          "x": -101,
+          "y": 194
+        },
+        "z": 1,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isassociatedwith": [
+          "3eb6822a-7a9d-45f6-8a2f-dc40cef5a4d7",
+          "6c032d82-53c1-4a86-81c9-69397feef307"
+        ]
+      },
+      "f78d070f-c357-4ada-a821-5e53763e31ee": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -92.0092840845491,
+          "y": 213.65194078690305
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": [],
+        "isrelatedto": [
+          "ec8f997e-bae1-40f0-8e4a-329c413c88ae",
+          "2fec3394-d337-4809-bbd5-17cacc209e4a",
+          "30f39fe4-f353-4c6b-a6bb-8d0f956e811f",
+          "2c439c42-e216-4739-b87c-4a69f67f3ec7"
+        ]
+      },
+      "2618ca7d-5bb9-4e4f-ab3a-8609254d014e": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -10,
+          "y": 220
+        },
+        "z": 2,
+        "parent": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214",
+        "embeds": []
+      }
+    }
+  },
+  "Resources": {
+    "ParticipantsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::StackName"
+              },
+              "Participants"
+            ]
+          ]
+        },
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "participant",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "channel",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "last_seen",
+            "AttributeType": "N"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "channel",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "participant",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "LastParticipantActivity",
+            "KeySchema": [
+              {
+                "AttributeName": "channel",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "last_seen",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": {
+            "Fn::Select": [
+              "2",
+              {
+                "Ref": "DynamoCapacity"
+              }
+            ]
+          },
+          "WriteCapacityUnits": {
+            "Fn::Select": [
+              "3",
+              {
+                "Ref": "DynamoCapacity"
+              }
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "2fec3394-d337-4809-bbd5-17cacc209e4a"
+        }
+      }
+    },
+    "MessagesTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::StackName"
+              },
+              "Messages"
+            ]
+          ]
+        },
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "contextkey",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "event_timestamp",
+            "AttributeType": "N"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "contextkey",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "event_timestamp",
+            "KeyType": "RANGE"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": {
+            "Fn::Select": [
+              "0",
+              {
+                "Ref": "DynamoCapacity"
+              }
+            ]
+          },
+          "WriteCapacityUnits": {
+            "Fn::Select": [
+              "1",
+              {
+                "Ref": "DynamoCapacity"
+              }
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "ec8f997e-bae1-40f0-8e4a-329c413c88ae"
+        }
+      }
+    },
+    "BucketPrefixPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "StaticContentBucket"
+        },
+        "PolicyDocument": {
+          "Id": "PolicyForAnonymousAccess",
+          "Statement": [
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "StaticContentBucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Sid": "PolicyForAnonymousAccess"
+            }
+          ],
+          "Version": "2008-10-17"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "683fa937-ac37-43fd-a49a-dc91e4873a6c"
+        }
+      }
+    },
+    "PostMessage": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Handler": "index.handler",
+        "MemorySize": "128",
+        "Runtime": "python2.7",
+        "Timeout": "3",
+        "Description": "Post a message to the DynamoDB table in the appropriate channel.",
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "\n",
+              [
+                "import json",
+                "",
+                "class StringEncoder(json.JSONEncoder):",
+                "    def default(self, o):",
+                "        try:",
+                "            return str(o)",
+                "        except:",
+                "            return None",
+                "",
+                "def handler(event, context):",
+                "    return json.loads(json.dumps({\"Event\": event, \"ContextDict\": context.__dict__}, cls=StringEncoder))"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "b95b8d56-35ef-4701-b35e-e322f7e77e43"
+        }
+      }
+    },
+    "GetMessages": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Handler": "index.handler",
+        "MemorySize": "128",
+        "Runtime": "python2.7",
+        "Timeout": "3",
+        "Description": "Get message history from the DynamoDB table.",
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "\n",
+              [
+                "import json",
+                "",
+                "class StringEncoder(json.JSONEncoder):",
+                "    def default(self, o):",
+                "        try:",
+                "            return str(o)",
+                "        except:",
+                "            return None",
+                "",
+                "def handler(event, context):",
+                "    return json.loads(json.dumps({\"Event\": event, \"ContextDict\": context.__dict__}, cls=StringEncoder))"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "ee16ba16-b8f1-46e3-8d44-01e54ebcf161"
+        }
+      }
+    },
+    "PostParticipant": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Handler": "index.handler",
+        "MemorySize": "128",
+        "Runtime": "python2.7",
+        "Timeout": "3",
+        "Description": "Update participant record to indicate active typing.",
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "\n",
+              [
+                "import json",
+                "",
+                "class StringEncoder(json.JSONEncoder):",
+                "    def default(self, o):",
+                "        try:",
+                "            return str(o)",
+                "        except:",
+                "            return None",
+                "",
+                "def handler(event, context):",
+                "    return json.loads(json.dumps({\"Event\": event, \"ContextDict\": context.__dict__}, cls=StringEncoder))"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "e5049c33-2588-4394-821c-34d483fcb2ce"
+        }
+      }
+    },
+    "GetParticipants": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Handler": "index.handler",
+        "MemorySize": "128",
+        "Runtime": "python2.7",
+        "Timeout": "3",
+        "Description": "Get list of participants that are actively typing.",
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "\n",
+              [
+                "import json",
+                "",
+                "class StringEncoder(json.JSONEncoder):",
+                "    def default(self, o):",
+                "        try:",
+                "            return str(o)",
+                "        except:",
+                "            return None",
+                "",
+                "def handler(event, context):",
+                "    return json.loads(json.dumps({\"Event\": event, \"ContextDict\": context.__dict__}, cls=StringEncoder))"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "2c439c42-e216-4739-b87c-4a69f67f3ec7"
+        }
+      }
+    },
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "CloudWatchLogs",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": {
+                "Effect": "Allow",
+                "Action": [
+                  "logs:CreateLogGroup",
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+                ],
+                "Resource": [
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:logs:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":*"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "PolicyName": "DynamoDB",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": {
+                "Effect": "Allow",
+                "Action": [
+                  "dynamodb:GetItem",
+                  "dynamodb:BatchGetItem",
+                  "dynamodb:Query",
+                  "dynamodb:PutItem",
+                  "dynamodb:UpdateItem"
+                ],
+                "Resource": [
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "ParticipantsTable"
+                        }
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "ParticipantsTable"
+                        },
+                        "/index/LastParticipantActivity"
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "MessagesTable"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "d8f04db6-ba3e-4fd4-a653-4dc421faf8a0"
+        }
+      }
+    },
+    "StaticContentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {},
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "f79935c8-d275-4935-b878-dcb6a5e911bb"
+        }
+      }
+    },
+    "API": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Description": "Implement the interactivity of the group chat application.",
+        "Name": {
+          "Ref": "AWS::StackName"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "8ff45629-4c0b-4cd4-b9b4-957bf2d72214"
+        }
+      }
+    },
+    "ParticipantResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "PathPart": "participant",
+        "ParentId": {
+          "Fn::GetAtt": [
+            "API",
+            "RootResourceId"
+          ]
+        },
+        "RestApiId": {
+          "Ref": "API"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "6c032d82-53c1-4a86-81c9-69397feef307"
+        }
+      }
+    },
+    "MessageResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "PathPart": "message",
+        "ParentId": {
+          "Fn::GetAtt": [
+            "API",
+            "RootResourceId"
+          ]
+        },
+        "RestApiId": {
+          "Ref": "API"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "29e81798-24f1-4ef7-ab55-9b04a1e995c9"
+        }
+      }
+    },
+    "ParticipantGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "RequestParameters": {
+          "method.request.querystring.Channel": true
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "GetParticipants"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "ParticipantResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "85f19548-852a-441a-ada9-9a4ecba5308d"
+        }
+      }
+    },
+    "ParticipantPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "PostParticipant"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "ParticipantResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "0aca1de9-564b-42d8-a244-260b75694635"
+        }
+      }
+    },
+    "ParticipantOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Headers": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "OPTIONS",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "ParticipantResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "c8471db7-bc50-4df6-a102-a537fea0177d"
+        }
+      }
+    },
+    "MessageGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "RequestParameters": {
+          "method.request.querystring.FromTimestamp": true,
+          "method.request.querystring.Channel": true
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "GetMessages"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "MessageResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "9b12da9f-59bc-4096-9fab-e58cfebd1718"
+        }
+      }
+    },
+    "MessagePost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "PostMessage"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "MessageResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "f0e2b60b-3373-42ce-9284-9caf8219007c"
+        }
+      }
+    },
+    "MessageOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Headers": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "OPTIONS",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "MessageResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "029c8409-9014-418f-894b-0fe42efa5113"
+        }
+      }
+    },
+    "Deployment": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "Description": "Main stage deployed by CloudFormation.",
+        "StageName": "Main",
+        "RestApiId": {
+          "Ref": "API"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "41ff6095-15cc-488c-9864-c359ec8775e1"
+        }
+      },
+      "DependsOn": [
+        "ParticipantGet",
+        "ParticipantPost",
+        "ParticipantOptions",
+        "MessageGet",
+        "MessagePost",
+        "MessageOptions",
+        "ChannelGet",
+        "ChannelPost",
+        "ChannelOptions",
+        "MessageGet2",
+        "MessageOptions2",
+        "ParticipantChannelGet",
+        "ParticipantChannelOptions"
+      ]
+    },
+    "LP2Z5XM": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "GetMessages"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/GET/message"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "e47a0fe8-1472-4da5-8098-a8fd99ae3f35"
+        }
+      },
+      "DependsOn": [
+        "LA2QRA3"
+      ]
+    },
+    "LP1GJ3O": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "PostMessage"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/POST/message"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "ee521de5-21d9-4715-aec8-2ad26138b837"
+        }
+      },
+      "DependsOn": [
+        "LA2IPSB"
+      ]
+    },
+    "LP1YZBM": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "PostParticipant"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/POST/participant"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "e88944e6-5b42-4eaf-a2d7-41259f48c258"
+        }
+      },
+      "DependsOn": [
+        "LA3G30A"
+      ]
+    },
+    "LPYSAD": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "GetParticipants"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/GET/participant"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "7b90921d-3039-4ae6-a83a-90e98703554b"
+        }
+      },
+      "DependsOn": [
+        "LA4WK0M"
+      ]
+    },
+    "LA2QRA3": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "Name": "Deployed",
+        "FunctionVersion": "$LATEST",
+        "FunctionName": {
+          "Ref": "GetMessages"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "c4fc4245-f1f6-4986-bdcb-2ea825c3cd42"
+        }
+      }
+    },
+    "LA2IPSB": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "Name": "Deployed",
+        "FunctionVersion": "$LATEST",
+        "FunctionName": {
+          "Ref": "PostMessage"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "749a6ec3-7299-411c-aa73-c4a2b7866abc"
+        }
+      }
+    },
+    "LA3G30A": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "Name": "Deployed",
+        "FunctionVersion": "$LATEST",
+        "FunctionName": {
+          "Ref": "PostParticipant"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "c1486558-9a88-4079-96ed-3aa9d05586c0"
+        }
+      }
+    },
+    "LA4WK0M": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "Name": "Deployed",
+        "FunctionVersion": "$LATEST",
+        "FunctionName": {
+          "Ref": "GetParticipants"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "81ce979c-9d30-48ed-932d-a053696062cb"
+        }
+      }
+    },
+    "ChannelResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "PathPart": "channel",
+        "ParentId": {
+          "Fn::GetAtt": [
+            "API",
+            "RootResourceId"
+          ]
+        },
+        "RestApiId": {
+          "Ref": "API"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "3eb6822a-7a9d-45f6-8a2f-dc40cef5a4d7"
+        }
+      }
+    },
+    "ChannelGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "GetChannels"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "ChannelResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "1843ed59-c351-4841-bc7c-6507197e65cb"
+        }
+      }
+    },
+    "ChannelPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "PostChannel"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "ChannelResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "2a862f9d-c8f6-4f54-95c6-4eb22a480e53"
+        }
+      }
+    },
+    "ChannelOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Headers": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "OPTIONS",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "ChannelResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "97129ae7-c998-4e4a-9641-1b7f5133965e"
+        }
+      }
+    },
+    "GetChannels": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Handler": "index.handler",
+        "MemorySize": "128",
+        "Runtime": "python2.7",
+        "Timeout": "3",
+        "Description": "Retrieve a list of available channels from DynamoDB.",
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "\n",
+              [
+                "import json",
+                "",
+                "class StringEncoder(json.JSONEncoder):",
+                "    def default(self, o):",
+                "        try:",
+                "            return str(o)",
+                "        except:",
+                "            return None",
+                "",
+                "def handler(event, context):",
+                "    return json.loads(json.dumps({\"Event\": event, \"ContextDict\": context.__dict__}, cls=StringEncoder))"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "30f39fe4-f353-4c6b-a6bb-8d0f956e811f"
+        }
+      }
+    },
+    "PostChannel": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Handler": "index.handler",
+        "MemorySize": "128",
+        "Runtime": "python2.7",
+        "Timeout": "3",
+        "Description": "Insert a new item into the DynamoDB participants table indicating a new channel is available.",
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "\n",
+              [
+                "import json",
+                "",
+                "class StringEncoder(json.JSONEncoder):",
+                "    def default(self, o):",
+                "        try:",
+                "            return str(o)",
+                "        except:",
+                "            return None",
+                "",
+                "def handler(event, context):",
+                "    return json.loads(json.dumps({\"Event\": event, \"ContextDict\": context.__dict__}, cls=StringEncoder))"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "0ac770a4-bb9d-45db-a323-3b06ba93b7ec"
+        }
+      }
+    },
+    "LA3HEZS": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "Name": "Deployed",
+        "FunctionVersion": "$LATEST",
+        "FunctionName": {
+          "Ref": "GetChannels"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "0b2e5067-0ede-49ee-b789-8bce253d135f"
+        }
+      }
+    },
+    "LAZ4DI": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "Name": "Deployed",
+        "FunctionVersion": "$LATEST",
+        "FunctionName": {
+          "Ref": "PostChannel"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "d3a66863-7453-46cf-8b8b-10a462d7e208"
+        }
+      }
+    },
+    "LP2LANM": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "GetChannels"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/GET/channel"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "4af835de-84a9-4b23-be37-c5b746d2eaf4"
+        }
+      },
+      "DependsOn": [
+        "LA3HEZS"
+      ]
+    },
+    "LP4GSPK": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "PostChannel"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/POST/channel"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "4d5d0feb-48ea-4b9b-a638-47d3413ca78a"
+        }
+      },
+      "DependsOn": [
+        "LAZ4DI"
+      ]
+    },
+    "GetMessageChannelResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "PathPart": "{Channel}",
+        "ParentId": {
+          "Ref": "MessageResource"
+        },
+        "RestApiId": {
+          "Ref": "API"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "b1f79872-55a9-491b-a8b8-bdc0e86cf4e8"
+        }
+      }
+    },
+    "GetMessageFromTSResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "PathPart": "{FromTimestamp}",
+        "ParentId": {
+          "Ref": "GetMessageChannelResource"
+        },
+        "RestApiId": {
+          "Ref": "API"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "ccf00a6c-2bf6-44c1-97db-f8a9ffdd7421"
+        }
+      }
+    },
+    "MessageGet2": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "RequestParameters": {
+          "method.request.path.Channel": true,
+          "method.request.path.FromTimestamp": true
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "GetMessages"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "GetMessageFromTSResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "73ea8d42-a481-4401-8031-52d9e9da5617"
+        }
+      }
+    },
+    "MessageOptions2": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Headers": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "OPTIONS",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "GetMessageFromTSResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "2978aee4-be10-43d5-9db0-5b50615d64f3"
+        }
+      }
+    },
+    "LPX5LJ": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "GetMessages"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/GET/message/*/*"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "1c783053-5cec-4eb5-977b-66c6d10ac0f6"
+        }
+      },
+      "DependsOn": [
+        "LA2QRA3"
+      ]
+    },
+    "LP3CNXP": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              {
+                "Ref": "GetParticipants"
+              },
+              ":Deployed"
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "API"
+              },
+              "/*/GET/participant/*"
+            ]
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "14c7a0d6-122c-4e1f-bc57-b338485739cb"
+        }
+      },
+      "DependsOn": [
+        "LA4WK0M"
+      ]
+    },
+    "GetParicipantChannelResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "PathPart": "{Channel}",
+        "ParentId": {
+          "Ref": "ParticipantResource"
+        },
+        "RestApiId": {
+          "Ref": "API"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "3f794aaa-da1f-40cf-8601-8d32ac2d567c"
+        }
+      }
+    },
+    "ParticipantChannelGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "RequestParameters": {
+          "method.request.path.Channel": true
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\n",
+                  "  \"MessagesTable\": \"",
+                  {
+                    "Ref": "MessagesTable"
+                  },
+                  "\",\n",
+                  "  \"ParticipantsTable\": \"",
+                  {
+                    "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"OriginalBody\": $input.json('$'),\n",
+                  "  #set($allParams = $input.params())\n",
+                  "  \"InputParams\" : {\n",
+                  "    #foreach($type in $allParams.keySet())\n",
+                  "    #set($params = $allParams.get($type))\n",
+                  "    \"$type\" : {\n",
+                  "      #foreach($paramName in $params.keySet())\n",
+                  "      \"$paramName\" : \"$util.escapeJavaScript($params.get($paramName))\"\n",
+                  "      #if($foreach.hasNext),#end\n",
+                  "      #end\n",
+                  "    }\n",
+                  "    #if($foreach.hasNext),#end\n",
+                  "    #end\n",
+                  "  }\n",
+                  "}"
+                ]
+              ]
+            }
+          },
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                ":function:",
+                {
+                  "Ref": "GetParticipants"
+                },
+                ":Deployed/invocations"
+              ]
+            ]
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "GetParicipantChannelResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "f78d070f-c357-4ada-a821-5e53763e31ee"
+        }
+      }
+    },
+    "ParticipantChannelOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Headers": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              }
+            }
+          ],
+          "IntegrationHttpMethod": "OPTIONS",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "RequestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "RestApiId": {
+          "Ref": "API"
+        },
+        "ResourceId": {
+          "Ref": "GetParicipantChannelResource"
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "2618ca7d-5bb9-4e4f-ab3a-8609254d014e"
+        }
+      }
+    }
+  }
+}
