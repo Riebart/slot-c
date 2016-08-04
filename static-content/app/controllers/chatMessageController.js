@@ -37,6 +37,7 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', functi
                 $scope.posting = false;
                 document.getElementById("chat-message-input").focus();
                 $rootScope.$emit('serverMessage', response.server_messages);
+                $rootScope.$emit('eventMessageRefresh');
             });
         } else {
             var diff = Date.now() - $scope.lastTalking;

@@ -139,6 +139,10 @@ myApp.controller('chatPanelCtrl', ['$scope', '$rootScope', '$resource', '$timeou
         poll();
     };
 
+    $rootScope.$on('eventMessageRefresh', function () {
+        $scope.PopulateMessages($scope.MessagesResource)
+    });
+
     $rootScope.$on("chatting", $scope.MessagesRefresh);
 
     $rootScope.$on("not chatting", function () {

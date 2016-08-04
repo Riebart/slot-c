@@ -1,5 +1,4 @@
-This project is based on the AWS Lambda zombie workshop done at the AWS Loft in London, April 2016. It is heavily modified and extended, with much of the code completely rewritten, and a modern CloudFormation template included.
-See: https://github.com/awslabs/aws-lambda-zombie-workshop
+This project is based on the [AWS Lambda zombie workshop](https://github.com/awslabs/aws-lambda-zombie-workshop) done at the AWS Loft in London, April 2016. It is heavily modified and extended, with much of the code completely rewritten, and a modern CloudFormation template included.
 
 To deploy:
 
