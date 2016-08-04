@@ -21,7 +21,11 @@ class JSONArg(argparse.Action):
         setattr(namespace, self.dest, parsed_val)
 
 def s3_domain(s3):
-    region = s3._client_config.region_name
+    if isinstance(s3, str) or isinstance(s3, unicode):
+        retion = s3
+    else:
+        region = s3._client_config.region_name
+    
     if region == "us-east-1":
         return "s3"
     else:
@@ -129,7 +133,8 @@ def template_kwargs(config):
         with open(config['TemplateContents']['S3Bucket'],'r') as fp:
             bucket_name = fp.read().strip()
         
-        # The body is too large, so upload it as an S3 object, and deploy by URL.
+        # The body is too large, so upload it as an S3 object, and deploy by
+        # URL.
         s3 = boto3.client('s3')
         s3_key = "%s.%d" % (config['StackName'], int(time.time()))
         s3.put_object(Bucket=bucket_name,
@@ -144,9 +149,11 @@ def template_kwargs(config):
     
     return ret
 
-# Periodically list the stack events, looking for CREATE_COMPLETE or UPDATE_COMPLETE.
-# Since they are in reverse chronological order, it is always safe to just check the
-# first batch. Look for LogicalResourceId matching the stack name exactly.
+# Periodically list the stack events, looking for CREATE_COMPLETE or
+# UPDATE_COMPLETE.
+# Since they are in reverse chronological order, it is always safe to just
+# check the
+# first batch.  Look for LogicalResourceId matching the stack name exactly.
 def wait_for_green_stack(stack_name, cfn, Timeout=300):
     start = time.time()
     while (time.time() - start) <= Timeout:
@@ -159,10 +166,10 @@ def wait_for_green_stack(stack_name, cfn, Timeout=300):
         e = events['StackEvents'][0]
         if e['LogicalResourceId'] == stack_name:
             status = e['ResourceStatus']
-            if status in [ 'CREATE_COMPLETE', 'UPDATE_COMPLETE' ]:
+            if status in ['CREATE_COMPLETE', 'UPDATE_COMPLETE']:
                 print
                 return True
-            elif status in [ 'ROLLBACK_COMPLETE', 'UPDATE_ROLLBACK_COMPLETE' ]:
+            elif status in ['ROLLBACK_COMPLETE', 'UPDATE_ROLLBACK_COMPLETE']:
                 print
                 return False
         time.sleep(5)
@@ -211,6 +218,12 @@ if __name__ == "__main__":
 
     config, cfn = prologue(args)
     print "Stack name: %s" % config['StackName']
+    bucket_detail = cfn.describe_stack_resource(StackName=config['StackName'],
+                                                LogicalResourceId="StaticContentBucket")
+    print "Final web service URL: " + \
+          'https://%s.amazonaws.com/%s/index.html' % \
+                    (s3_domain(cfn),
+                     bucket_detail['StackResourceDetail']['PhysicalResourceId'])
 
     print "Performing stack operation (%s)..." % args.subcommand
     args.callback(config, args, cfn)

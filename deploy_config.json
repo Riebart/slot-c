@@ -68,9 +68,9 @@
             "Service": [ "s3", "cloudformation" ],
             "Name": "Upload static website content to S3 bucket.",
             "Code": [
-                "import os",
+                "import subprocess",
                 "s3_bucket = cloudformation.describe_stack_resource(StackName='{{STACKNAME}}', LogicalResourceId='StaticContentBucket')['StackResourceDetail']['PhysicalResourceId']",
-                "[ [s3.put_object(**{'Bucket':s3_bucket, 'Body':open(r+'/'+i,'r'), 'Key': (r.replace('static-content','') + '/' + i)[1:]}) for i in f ] for r, d, f in os.walk('static-content') ]"
+                "print subprocess.check_output(('aws','s3','cp','--recursive','./static-content/','s3://%s' % s3_bucket))"
             ]
         }
     ]
