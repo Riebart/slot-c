@@ -6,67 +6,125 @@ import boto3
 
 ddb = boto3.client('dynamodb')
 
-def slash_help(Event, Channel, Participant, Message):
-    return """
-    /channel <ChannelName>
+class SlashCommand:
+    @staticmethod
+    def do(Event, Channel, Participant, Message):
+        pass
+    @staticmethod
+    def help():
+        return ""
+
+class ChannelCmd(SlashCommand):
+    @staticmethod
+    def do(Event, Channel, Participant, Message):
+        try:
+            # Generate a unique timestamp numeric value from the SHA256 hash of
+            # the
+            # channel name.
+            #
+            # str() doesn't include the 'L' in the long integer type, and as
+            # per the
+            # DynamoDB limits, the integer fields can have up to 38 digits of
+            # precision,
+            # which corresponds to about 128 bits (32 hex digits), so cut off a
+            # couple
+            # for safety.
+            # See:
+            # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html#limits-data-types)
+            ts_hash = str(int(hashlib.sha256(Message.strip()).hexdigest()[:30], 16))
+            ddb.update_item(TableName=Event['MessagesTable'],
+                            Key={'contextkey': {'S': 'meta:channels'},
+                                 'event_timestamp': {'N': ts_hash}},
+                            UpdateExpression='set channel_name = :c',
+                            ExpressionAttributeValues={':c': {'S': Message.strip()}})
+            return None
+        except Exception as e:
+            print repr(e)
+            return None
+
+    @staticmethod
+    def help():
+        return """
+        /channel <ChannelName>
         - Create a new channel, if the channel already exists, no changes are made.
         - The channel will appear in the list at the next channel refresh period.
+        - Channels cannot be deleted.
+        """
 
-    /group <GroupName> <ParticipantName> ...
-        - Create a new private group with the listed participants.
-        - If any participant name doesn't exist, they are slently ignored.
-        - If the group name already exist, nothing is done, and no new group is created.
+class GroupCmd(SlashCommand):
+    @staticmethod
+    def do(Event, Channel, Participant, Message):
+        pass
+    @staticmethod
+    def help():
+        return """
+        /group create <grou pname> <participant> [participant] ...
+        - Create a group with the given alias and participants
+        /@ <participant> [participant] ...
+        - Create a group with the default alias (comma separated list of participant usernames) and given participants.
+        /group rename <old group name> <new group name>
+        - Rename a group of which you are a member.
+        /leave <group name>
+        - Exit a group. IT IS NOT POSSIBLE TO RE JOIN A GROUP YOU HAVE LEFT.
+        - When a member of a group leaves, and the group was given the default alias (with /@), the group's alias is updated to reflect the new membership list.
+        /group delete <group name>
+        - Delete a group of which you are a member. This will result in all group message content being unrecoverable.
+        /group members <group name>
+        - Obtain membership list of a group with the given alias.
+        """
 
-    /pgp challenge
-        - The server will return the challenge nonce, and a timeout for the response.
-        - If the user already has a PGP key associated it, the recipient of the key will also be indicated.
-        - The server expects the challenge nonce signed with the user's PGP key.
-   
-    /pgp response <ASCII-armoured PGP-clearsigned challenge nonce, stripped of newlines>
-        - Authenticate to the server by responding to the challenge.
-
-    /publish <message>
+class PublishCmd(SlashCommand):
+    @staticmethod
+    def do(Event, Channel, Participant, Message):
+        pass
+    @staticmethod
+    def help():
+        return """
+        /publish <message>
         - Publish a message to all subscribed participants.
         - The message will appear to all other participants as normal, but will be posted to the channel's SNS topic.
-    
-    /subscription <none|published|all> <realtime|daily> <email|sms>
+        """
+
+class SubscribeCmd(SlashCommand):
+    @staticmethod
+    def do(Event, Channel, Participant, Message):
+        pass
+    @staticmethod
+    def help():
+        return """
+        /subscription <none|published|all> <realtime|daily> <email|sms>
         - Changes subscription settings for the active channel, with three parameters:
         > Which messages to get notifications for (if 'none' is given, the other parameters are ignored)
         > How frequently to receive notifications about new messages.
         > Which channel you want to receive notifications via.
-"""
+        """
 
-def new_channel(Event, Channel, Participant, Message):
-    try:
-        # Generate a unique timestamp numeric value from the SHA256 hash of the
-        # channel name.
-        #
-        # str() doesn't include the 'L' in the long integer type, and as per the
-        # DynamoDB limits, the integer fields can have up to 38 digits of precision,
-        # which corresponds to about 128 bits (32 hex digits), so cut off a couple
-        # for safety.
-        # See: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html#limits-data-types)
-        ts_hash = str(int(hashlib.sha256(Message.strip()).hexdigest()[:30], 16))
-        ddb.update_item(TableName=Event['MessagesTable'],
-                        Key={'contextkey': {'S': 'meta:channels'},
-                             'event_timestamp': {'N': ts_hash}},
-                        UpdateExpression='set channel_name = :c',
-                        ExpressionAttributeValues={':c': {'S': Message.strip()}})
-        return None
-    except Exception as e:
-        print repr(e)
-        return None
+class PGPCmd(SlashCommand):
+    @staticmethod
+    def do(Event, Channel, Participant, Message):
+        pass
+    @staticmethod
+    def help():
+        return """
+        /pgp challenge
+        - The server will return the challenge nonce, and a timeout for the response.
+        - If the user already has a PGP key associated it, the recipient of the key will also be indicated.
+        - The server expects the challenge nonce signed with the user's PGP key.
+   
+        /pgp response <ASCII-armoured PGP-clearsigned challenge nonce, stripped of newlines>
+        - Authenticate to the server by responding to the challenge.
+        """
 
-def new_group(Event, Channel, Participant, Message):
-    pass
-
-def pgp_handshake(Event, Channel, Participant, Message):
-    pass
-
-slash_commands = { 'help': slash_help,
-                   'channel': new_channel,
-                   'group': new_group,
-                   'pgp': pgp_handshake }
+slash_commands = { 'channel': ChannelCmd.do,
+                   'group': GroupCmd.do,
+                   'pgp': PGPCmd.do,
+                   'publish': PublishCmd.do,
+                   'subscribe': SubscribeCmd.do,
+                   'help': lambda e, c, p, a: "\n".join([cmd.help() for cmd in [ChannelCmd,
+                                                               GroupCmd,
+                                                               PGPCmd,
+                                                               PublishCmd,
+                                                               SubscribeCmd]]) }
 
 def handle_slash_command(Event, Channel, Participant, Message):
     # It needs to have some characters, and start with a slash.
