@@ -14,17 +14,21 @@ myApp.controller('chatPanelCtrl', ['$scope', '$rootScope', '$resource', '$timeou
         return Math.max(1.0, Math.min(1.0 + 9.0 * ((ms_delta - 300000) / 300000), 25.0));
     };
 
-    $scope.channel = DEFAULT_CHANNEL_NAME;
+    $scope.init = function () {
+        $scope.channel = DEFAULT_CHANNEL_NAME;
 
-    $scope.default_message_history = 3600 * 1000 * 24;
-    $scope.lastMessageTime = (new Date).valueOf() - $scope.default_message_history;
-    $scope.firstMessageTime = (new Date).valueOf();
-    $scope.more_history = {};
-    $scope.more_history[$scope.channel] = true;
+        $scope.default_message_history = 3600 * 1000 * 24;
+        $scope.lastMessageTime = (new Date).valueOf() - $scope.default_message_history;
+        $scope.firstMessageTime = (new Date).valueOf();
+        $scope.more_history = {};
+        $scope.more_history[$scope.channel] = true;
 
-    $scope.MessagesResource = $resource(API_ENDPOINT + "/message/:channel/:from");
-    $scope.messages = {};
-    $scope.messages[$scope.channel] = [];
+        $scope.MessagesResource = $resource(API_ENDPOINT + "/message/:channel/:from");
+        $scope.messages = {};
+        $scope.messages[$scope.channel] = [];
+    };
+
+    $scope.init();
 
     $scope.GetMoreHistory = function () {
         console.log('Retrieving history from Server');
@@ -143,7 +147,10 @@ myApp.controller('chatPanelCtrl', ['$scope', '$rootScope', '$resource', '$timeou
         $scope.PopulateMessages($scope.MessagesResource)
     });
 
-    $rootScope.$on("chatting", $scope.MessagesRefresh);
+    $rootScope.$on("chatting", function () {
+        $scope.init();
+        $scope.MessagesRefresh();
+    });
 
     $rootScope.$on("not chatting", function () {
         //clear our model, which will clear out the messages from the panel

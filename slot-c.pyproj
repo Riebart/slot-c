@@ -23,12 +23,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="deploy.py" />
-    <Compile Include="GetChannels.py" />
-    <Compile Include="GetMessages.py" />
-    <Compile Include="GetParticipants.py" />
-    <Compile Include="PostChannel.py" />
-    <Compile Include="PostMessage.py" />
-    <Compile Include="PostParticipant.py" />
+    <Compile Include="Lambda\GetChannels.py" />
+    <Compile Include="Lambda\GetMessages.py" />
+    <Compile Include="Lambda\GetParticipants.py" />
+    <Compile Include="Lambda\PostMessage.py" />
+    <Compile Include="Lambda\PostParticipant.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".hg\last-message.txt" />

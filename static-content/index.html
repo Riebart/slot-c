@@ -40,6 +40,12 @@
                     <input ng-click="toggleChatting()" id="chat-toggle"
                            type="button" value="Start Chatting" />
                 </p>
+                <p>
+                    <span data-ng-show="seconds_until_refresh != 0"
+                          style="color:red">
+                        Your webapp version is out of date! Automatic refresh in {{seconds_until_refresh}} seconds.
+                    </span>
+                </p>
             </div>
         </div>
         <div class="panel-info-chatbox">

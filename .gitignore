@@ -2,5 +2,6 @@
 .vs*
 *pyc
 
+static-content/version.json
 static-content/assets/js/constants.js
 s3_bucket_name.private

@@ -11,35 +11,35 @@
     "LambdaFunctions": {
         "GetMessages": {
             "CodeFiles": [
-                [ "GetMessages.py", "index.py" ]
+                [ "Lambda/GetMessages.py", "index.py" ]
             ],
             "Publish": true,
             "Alias": "Deployed"
         },
         "PostMessage": {
             "CodeFiles": [
-                [ "PostMessage.py", "index.py" ]
+                [ "Lambda/PostMessage.py", "index.py" ]
             ],
             "Publish": true,
             "Alias": "Deployed"
         },
         "GetParticipants": {
             "CodeFiles": [
-                [ "GetParticipants.py", "index.py" ]
+                [ "Lambda/GetParticipants.py", "index.py" ]
             ],
             "Publish": true,
             "Alias": "Deployed"
         },
         "PostParticipant": {
             "CodeFiles": [
-                [ "PostParticipant.py", "index.py" ]
+                [ "Lambda/PostParticipant.py", "index.py" ]
             ],
             "Publish": true,
             "Alias": "Deployed"
         },
         "GetChannels": {
             "CodeFiles": [
-                [ "GetChannels.py", "index.py" ]
+                [ "Lambda/GetChannels.py", "index.py" ]
             ],
             "Publish": true,
             "Alias": "Deployed"
@@ -54,6 +54,26 @@
                 "fp = open('static-content/assets/js/constants.js','w')",
                 "fp.write('var DEFAULT_CHANNEL_NAME = \\'General\\';\\n')",
                 "fp.write('var API_ENDPOINT = \\'https://%s.execute-api.us-east-1.amazonaws.com/Main\\';\\n' % api_id)",
+                "fp.close()"
+            ]
+        },
+        {
+            "Service": [ "apigateway", "cloudformation" ],
+            "Name": "Deploying API Gateway stage.",
+            "Only": [ "update-stack" ],
+            "Code": [
+                "api_id = cloudformation.describe_stack_resource(StackName='{{STACKNAME}}', LogicalResourceId='API')['StackResourceDetail']['PhysicalResourceId']",
+                "apigateway.create_deployment(restApiId=api_id, stageName='Main')"
+            ]
+        },
+        {
+            "Service": [ ],
+            "Name": "Webapp static content digest",
+            "Code": [
+                "import subprocess, hashlib, json",
+                "hash = hashlib.sha256(''.join([ open(f,'r').read() for f in sorted(subprocess.check_output(('find','static-content','-type','f')).strip().split('\\n')) ])).hexdigest()",
+                "fp = open('static-content/version.json','w')",
+                "fp.write(json.dumps({'hash': hash}))",
                 "fp.close()"
             ]
         },

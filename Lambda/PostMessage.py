@@ -1,3 +1,4 @@
+import json
 import time
 import hashlib
 import urllib
@@ -84,6 +85,12 @@ def handle_slash_command(Event, Channel, Participant, Message):
         return (Message, None)
 
 def handler(event, context):
+    try:
+        print "X-Forwarded-For %s %s" % (repr(time.time()),
+                                         event['InputParams']['header']['X-Forwarded-For'].replace(',',''))
+    except:
+        pass
+
     # All events should have two pieces of information at the top level.
     if 'MessagesTable' not in event or 'ParticipantsTable' not in event:
         return {'server_messages': None}

@@ -116,9 +116,14 @@ def epilogue(Config, Args, Cfn):
     if 'CustomEpilogue' in Config:
         print "Performing custom epilogue steps."
         for e in Config['CustomEpilogue']:
-            print "   Performing step:", e['Name']
-            if not custom_epilogue(e, Config):
-                print "        ERROR!"
+            # Skip if the stage specifies a list of StackOps that it
+            # should be run with.
+            if 'Only' in e and args.subcommand not in e['Only']:
+                print "   SKIPPING step:", e['Name']
+            else:
+                print "   Performing step:", e['Name']
+                if not custom_epilogue(e, Config):
+                    print "        ERROR!"
 
 def template_kwargs(config):
     ret = {'StackName': config['StackName'],
@@ -176,7 +181,7 @@ def wait_for_green_stack(stack_name, cfn, Timeout=300):
     print
     return False
 
-def nop_stack(config, args, cfn):
+def no_stack_op(config, args, cfn):
     pass
 
 def create_stack(config, args, cfn):
@@ -198,7 +203,7 @@ if __name__ == "__main__":
     nop_parser.add_argument("--stack-name", default=None, required=True,
                             help="Stack name to update with new template, code, and static content.")
     nop_parser.set_defaults(stack_parameters=None)
-    nop_parser.set_defaults(callback=nop_stack, subcommand="nop-stack")
+    nop_parser.set_defaults(callback=no_stack_op, subcommand="no-stack-op")
 
     create_parser = subparsers.add_parser("create-stack", help="Create a new stack with an optional given stack name and parameters.")
     create_parser.add_argument("--stack-name", default=None, required=False,
