@@ -43,13 +43,6 @@
             ],
             "Publish": true,
             "Alias": "Deployed"
-        },
-        "PostChannel": {
-            "CodeFiles": [
-                [ "PostChannel.py", "index.py" ]
-            ],
-            "Publish": true,
-            "Alias": "Deployed"
         }
     },
     "CustomEpilogue": [
