@@ -108,22 +108,26 @@ body {
 
 .user-message {
     vertical-align: top;
+    display: flex;
 }
 
 .server-message {
     vertical-align: top;
     color: #BBB;
+    display: flex;
 }
 
 .user-source {
     vertical-align: top;
-    float: right;
+    float: left;
+    display: flex;
     color: white;
 }
 
 .server-source {
     vertical-align: top;
-    float: right;
+    float: left;
+    display: flex;
     color: #AFA;
 }
 
