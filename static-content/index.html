@@ -59,7 +59,6 @@
                     <div id="message-items" data-ng-repeat="message in messages[channel]">
                         <!-- Non-breaking hyphen and space to prevent timestamp wrapping on long message lines -->
                         <div style="float:left;
-                                     width:18%;
                                      text-overflow:ellipsis;
                                      white-space:nowrap;
                                      overflow:hidden;">
@@ -69,7 +68,7 @@
                             {{message.participant}}&nbsp;&nbsp;&nbsp;
                         </div>
                         <div ng-class="{'user-message': message.source === 'user','server-message': message.source === 'server'}">
-                            &nbsp;{{message.message}}
+                            {{message.message}}&nbsp;
                         </div>
                     </div>
                     <div>
