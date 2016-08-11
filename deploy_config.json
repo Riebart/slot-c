@@ -53,6 +53,7 @@
                 "api_id = cloudformation.describe_stack_resource(StackName='{{STACKNAME}}', LogicalResourceId='API')['StackResourceDetail']['PhysicalResourceId']",
                 "fp = open('static-content/assets/js/constants.js','w')",
                 "fp.write('var DEFAULT_CHANNEL_NAME = \\'General\\';\\n')",
+                "fp.write('var MAXIMUM_UPDATE_BACKOFF = 25.0;\\n')",
                 "fp.write('var API_ENDPOINT = \\'https://%s.execute-api.us-east-1.amazonaws.com/Main\\';\\n' % api_id)",
                 "fp.close()"
             ]
