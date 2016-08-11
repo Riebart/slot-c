@@ -1,5 +1,12 @@
 myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', function ($scope, $rootScope, $resource) {
 
+    // Hold the number of seconds until the file upload token expires.
+    $scope.file_upload = 0;
+    $scope.file_upload_token = '';
+    $scope.fileUpload = function () {
+        alert('1');
+    };
+
     $rootScope.$on("chatting", function () {
         document.getElementById('chat-message-input').placeholder = "Enter a message and save humanity";
     });
@@ -22,6 +29,10 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', functi
             var message_text = $scope.chatMessage;
             $scope.chatMessage = null;
             console.log('Sending Message: ' + $scope.chatMessage);
+
+            // If this is the /file command
+            if (message_text.substring(0, 5) == '/file') {
+            }
             
             var message = {
                 // encodeURIComponent() doesn't encode single quotes, which are a problem

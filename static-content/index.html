@@ -41,7 +41,7 @@
                            type="button" value="Start Chatting" />
                 </p>
                 <p>
-                    <span data-ng-show="seconds_until_refresh != 0"
+                    <span ng-show="seconds_until_refresh != 0"
                           style="color:red">
                         Your webapp version is out of date! Automatic refresh in {{seconds_until_refresh}} seconds.
                     </span>
@@ -56,7 +56,7 @@
 
                 ***********************************************************  -->
                 <div ng-controller="chatPanelCtrl" class="panel-body" id="chat-body">
-                    <div id="message-items" data-ng-repeat="message in messages[channel]">
+                    <div id="message-items" ng-repeat="message in messages[channel]">
                         <!-- Non-breaking hyphen and space to prevent timestamp wrapping on long message lines -->
                         <div style="float:left;
                                      text-overflow:ellipsis;
@@ -72,8 +72,8 @@
                         </div>
                     </div>
                     <div>
-                        <span data-ng-click="GetMoreHistory()"
-                              data-ng-show="more_history[channel]">
+                        <span ng-click="GetMoreHistory()"
+                              ng-show="more_history[channel]">
                             <a href="">Load more history</a>
                         </span>
                     </div>
@@ -87,13 +87,13 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tr id="default-channel-item" data-ng-repeat="channel in defaultChannel">
+                        <tr id="default-channel-item" ng-repeat="channel in defaultChannel">
                             <td>{{channel}}</td>
                         </tr>
-                        <tr id="channel-items" data-ng-repeat="channel in channels"
+                        <tr id="channel-items" ng-repeat="channel in channels"
                             style="border-bottom-style:dotted;
                                    border-color:gray;">
-                            <td data-ng-click="ChangeChannel(channel)">
+                            <td ng-click="ChangeChannel(channel)">
                                 {{channel}}
                             </td>
                         </tr>
@@ -108,7 +108,7 @@
             <div ng-controller="talkersPanelCtrl" class="panel-body">
                 <div id="talkers-body">
                     Users Typing: &nbsp
-                    <div id="talkers-items" data-ng-repeat="talker in talkers">
+                    <div id="talkers-items" ng-repeat="talker in talkers">
                         {{ talker }}&nbsp;
                     </div>
                 </div>
@@ -128,7 +128,17 @@
                            id="chat-message-input"
                            placeholder="Save your brains, enter your user name">
                 </div>
-                Type <i>/help</i> to see a list of supported slash-commands.
+                <div ng-show="file_upload != 0">
+                    <form style="float:left;">
+                        <label style="float:left;">
+                            File upload token received ({{file_upload_token}}). Select a file:&nbsp;&nbsp;
+                        </label>
+                        <input type="file" id="file-upload" style="float:left;" />
+                        <a href="" ng-click="fileUpload()" style="float:left;">Upload</a>
+                    </form>
+                    <br /><br />
+                </div>
+                <p>Type <i>/help</i> to see a list of supported slash-commands.</p>
             </div>
         </div>
     </div>

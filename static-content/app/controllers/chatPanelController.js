@@ -1,6 +1,7 @@
 myApp.controller('chatPanelCtrl', ['$scope', '$rootScope', '$resource', '$timeout', function ($scope, $rootScope, $resource, $timeout) {
 
     $rootScope.backoff_factor = 1.0;
+
     $scope.adjust_backoff = function () {
         // If it's been more than 60 seconds since the last message, start to increase
         // the backoff factor, up to a maximum value gradually, over the course of
@@ -11,7 +12,8 @@ myApp.controller('chatPanelCtrl', ['$scope', '$rootScope', '$resource', '$timeou
             ms_delta = (new Date).valueOf() - $scope.messages[$scope.channel][0].timestamp;
         }
         // Don't let it go below 1.0, or above 10.0
-        return Math.max(1.0, Math.min(1.0 + 9.0 * ((ms_delta - 300000) / 300000), 25.0));
+        var v = Math.max(1.0, Math.min(1.0 + (MAXIMUM_UPDATE_BACKOFF - 1) * ((ms_delta - 300000) / 300000), MAXIMUM_UPDATE_BACKOFF));
+        return v;
     };
 
     $scope.init = function () {
@@ -72,7 +74,7 @@ myApp.controller('chatPanelCtrl', ['$scope', '$rootScope', '$resource', '$timeou
                         $rootScope.backoff_factor = 1.0;
                     }
                         // If there were no new messages, adjust the backoff
-                    else if ($scope.messages[$scope.channel].length > 0) {
+                    else {
                         $rootScope.backoff_factor = $scope.adjust_backoff();
                     }
                 }
@@ -157,9 +159,13 @@ myApp.controller('chatPanelCtrl', ['$scope', '$rootScope', '$resource', '$timeou
         $scope.messages = {};
     });
 
-    $scope.$on('async_init', $scope.MessagesRefresh);
+    $scope.$on('async_init', function () {
+        $scope.init();
+        $scope.MessagesRefresh();
+    });
 
     if (localStorage.getItem('userName') !== null) {
+
         $scope.$emit('async_init');
     }
 
