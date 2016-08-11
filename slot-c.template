@@ -1347,6 +1347,11 @@
                     "Ref": "ParticipantsTable"
                   },
                   "\",\n",
+                  "  \"S3Bucket\": \"",
+                  {
+                    "Ref": "StaticContentBucket"
+                  },
+                  "\",\n",
                   "  \"OriginalBody\": $input.json('$'),\n",
                   "  #set($allParams = $input.params())\n",
                   "  \"InputParams\" : {\n",
@@ -1444,6 +1449,11 @@
                   "  \"ParticipantsTable\": \"",
                   {
                     "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"S3Bucket\": \"",
+                  {
+                    "Ref": "StaticContentBucket"
                   },
                   "\",\n",
                   "  \"OriginalBody\": $input.json('$'),\n",
@@ -1596,6 +1606,11 @@
                     "Ref": "ParticipantsTable"
                   },
                   "\",\n",
+                  "  \"S3Bucket\": \"",
+                  {
+                    "Ref": "StaticContentBucket"
+                  },
+                  "\",\n",
                   "  \"OriginalBody\": $input.json('$'),\n",
                   "  #set($allParams = $input.params())\n",
                   "  \"InputParams\" : {\n",
@@ -1693,6 +1708,11 @@
                   "  \"ParticipantsTable\": \"",
                   {
                     "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"S3Bucket\": \"",
+                  {
+                    "Ref": "StaticContentBucket"
                   },
                   "\",\n",
                   "  \"OriginalBody\": $input.json('$'),\n",
@@ -2170,6 +2190,11 @@
                     "Ref": "ParticipantsTable"
                   },
                   "\",\n",
+                  "  \"S3Bucket\": \"",
+                  {
+                    "Ref": "StaticContentBucket"
+                  },
+                  "\",\n",
                   "  \"OriginalBody\": $input.json('$'),\n",
                   "  #set($allParams = $input.params())\n",
                   "  \"InputParams\" : {\n",
@@ -2465,6 +2490,11 @@
                     "Ref": "ParticipantsTable"
                   },
                   "\",\n",
+                  "  \"S3Bucket\": \"",
+                  {
+                    "Ref": "StaticContentBucket"
+                  },
+                  "\",\n",
                   "  \"OriginalBody\": $input.json('$'),\n",
                   "  #set($allParams = $input.params())\n",
                   "  \"InputParams\" : {\n",
@@ -2739,6 +2769,11 @@
                   "  \"ParticipantsTable\": \"",
                   {
                     "Ref": "ParticipantsTable"
+                  },
+                  "\",\n",
+                  "  \"S3Bucket\": \"",
+                  {
+                    "Ref": "StaticContentBucket"
                   },
                   "\",\n",
                   "  \"OriginalBody\": $input.json('$'),\n",

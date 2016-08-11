@@ -1,10 +1,14 @@
 import json
 import time
+import uuid
 import hashlib
 import urllib
 import boto3
 
+s3 = boto3.client('s3')
 ddb = boto3.client('dynamodb')
+
+upload_token_lifetime = 3600
 
 class SlashCommand:
     @staticmethod
@@ -14,21 +18,38 @@ class SlashCommand:
     def help():
         return ""
 
+class FileCmd(SlashCommand):
+    @staticmethod
+    def do(Event, Channel, Participant, Message):
+        # Maximum S3 object key length is 1024 bytes, so just keep this reasonable.
+        file_name = "-" + Message[-256:] if Message != None else ".bin"
+        object_key = 'uploads/%s%s' % ( str(uuid.uuid1())[:8].replace('-',''), file_name)
+        post = s3.generate_presigned_post(Bucket=Event['S3Bucket'],
+                                          Key=object_key,
+                                          ExpiresIn=upload_token_lifetime)
+        post.update({'lifetime': upload_token_lifetime})
+        return (post, ["File upload token generated", json.dumps(post)])
+    
+    @staticmethod
+    def help():
+        return """
+        /file [FileName]
+        - Request a new S3 pre-signed POST url to upload a file.
+        - If no filename is specified, a random filename with extension '.bin' will be allocated.
+        - If a filename is provided, it will be prefixed with a random component, and truncated (taking the tail 256 characters).
+        """
+
 class ChannelCmd(SlashCommand):
     @staticmethod
     def do(Event, Channel, Participant, Message):
         try:
             # Generate a unique timestamp numeric value from the SHA256 hash of
-            # the
-            # channel name.
+            # the channel name.
             #
             # str() doesn't include the 'L' in the long integer type, and as
-            # per the
-            # DynamoDB limits, the integer fields can have up to 38 digits of
-            # precision,
-            # which corresponds to about 128 bits (32 hex digits), so cut off a
-            # couple
-            # for safety.
+            # per the DynamoDB limits, the integer fields can have up to 38
+            # digits of precision, which corresponds to about 128 bits (32 hex
+            # digits), so cut off a couple for safety.
             # See:
             # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html#limits-data-types)
             ts_hash = str(int(hashlib.sha256(Message.strip()).hexdigest()[:30], 16))
@@ -37,10 +58,10 @@ class ChannelCmd(SlashCommand):
                                  'event_timestamp': {'N': ts_hash}},
                             UpdateExpression='set channel_name = :c',
                             ExpressionAttributeValues={':c': {'S': Message.strip()}})
-            return None
+            return (None, None)
         except Exception as e:
             print repr(e)
-            return None
+            return (None, None)
 
     @staticmethod
     def help():
@@ -76,7 +97,8 @@ class GroupCmd(SlashCommand):
 class PublishCmd(SlashCommand):
     @staticmethod
     def do(Event, Channel, Participant, Message):
-        pass
+        return (None, None)
+    
     @staticmethod
     def help():
         return """
@@ -88,7 +110,8 @@ class PublishCmd(SlashCommand):
 class SubscribeCmd(SlashCommand):
     @staticmethod
     def do(Event, Channel, Participant, Message):
-        pass
+        return (None, None)
+    
     @staticmethod
     def help():
         return """
@@ -102,7 +125,8 @@ class SubscribeCmd(SlashCommand):
 class PGPCmd(SlashCommand):
     @staticmethod
     def do(Event, Channel, Participant, Message):
-        pass
+        return (None, None)
+    
     @staticmethod
     def help():
         return """
@@ -115,16 +139,12 @@ class PGPCmd(SlashCommand):
         - Authenticate to the server by responding to the challenge.
         """
 
-slash_commands = { 'channel': ChannelCmd.do,
-                   'group': GroupCmd.do,
-                   'pgp': PGPCmd.do,
-                   'publish': PublishCmd.do,
-                   'subscribe': SubscribeCmd.do,
-                   'help': lambda e, c, p, a: "\n".join([cmd.help() for cmd in [ChannelCmd,
-                                                               GroupCmd,
-                                                               PGPCmd,
-                                                               PublishCmd,
-                                                               SubscribeCmd]]) }
+slash_commands = {'file': FileCmd,
+                  'channel': ChannelCmd,
+                  'group': GroupCmd,
+                  'pgp': PGPCmd,
+                  'publish': PublishCmd,
+                  'subscribe': SubscribeCmd}
 
 def handle_slash_command(Event, Channel, Participant, Message):
     # It needs to have some characters, and start with a slash.
@@ -135,12 +155,25 @@ def handle_slash_command(Event, Channel, Participant, Message):
             args = None
         else:
             command_key, args = parts
-        if command_key in slash_commands:
-            return (None, slash_commands[command_key](Event, Channel, Participant, args).strip().split('\n'))
+        
+        # /help is a special case, it's a meta command built from
+        # the rest.    
+        if command_key == 'help':
+            r = []
+            for h in [cmd.help().strip() for cmd in slash_commands.values()]:
+                r += h.split("\n")
+                # For empty lines, there needs to be the space in there.
+                r += [" "]
+            return (None, None, r)
+        elif command_key in slash_commands:
+            # The slash-command class' .do() function is guaranteed to return
+            # - A dictionary that includes other parameters to include with the response
+            # - A list of server message lines.
+            return (None,) + slash_commands[command_key].do(Event, Channel, Participant, args)
         else:
-            return (Message, None)
+            return (Message, None, None)
     else:
-        return (Message, None)
+        return (Message, None, None)
 
 def handler(event, context):
     try:
@@ -160,10 +193,13 @@ def handler(event, context):
     except:
         return {'server_messages': None, 'result': False}
 
-    message, server_messages = handle_slash_command(event, channel, participant, message)
+    message, other_params, server_messages = handle_slash_command(event, channel, participant, message)
 
     if message == None:
-        return {'server_messages': server_messages, 'result': True}
+        r = {'server_messages': server_messages, 'result': True}
+        if isinstance(other_params, dict):
+            r.update(other_params)
+        return r
 
     # Everything needs to be a string.
     for v in [channel, participant, message]:
