@@ -217,6 +217,8 @@ if __name__ == "__main__":
                                help="Stack name to update with new template, code, and static content.")
     update_parser.add_argument("--stack-parameters", default=None, action=JSONArg,
                                help="Parameters for stack update/creation, given as a JSON dictionary of keys and string values. If a value is null, then the previous value is used.")
+    update_parser.add_argument("--no-epilogue", default=False, action='store_true',
+                               help="Do not perform epilogue operations, only perform CloudFormation update operation.")
     update_parser.set_defaults(callback=update_stack, subcommand="update-stack")
 
     args = parser.parse_args()
@@ -235,7 +237,10 @@ if __name__ == "__main__":
 
     print "Waiting for stack to be green..."
     if wait_for_green_stack(config['StackName'], cfn):
-        print "Performing epilogue..."
-        epilogue(config, args, cfn)
+        if args.subcommand == "update-stack" and args.no_epilogue:
+            print "Skipping epilogue"
+        else:
+            print "Performing epilogue..."
+            epilogue(config, args, cfn)
     else:
         print "Stack never reached green state."
