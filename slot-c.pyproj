@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".hg" />
+    <Folder Include="Lambda\" />
     <Folder Include="static-content" />
     <Folder Include="static-content\app" />
     <Folder Include="static-content\app\controllers" />
