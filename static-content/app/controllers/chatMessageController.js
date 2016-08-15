@@ -1,8 +1,8 @@
-myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', function ($scope, $rootScope, $resource) {
+myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$timeout', function ($scope, $rootScope, $resource, $timeout) {
 
     // Hold the number of seconds until the file upload token expires.
     $scope.file_upload = 0;
-    $scope.file_upload_token = '';
+    $scope.file_upload_token = null;
     $scope.fileUpload = function () {
         alert('1');
     };
@@ -23,6 +23,18 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', functi
         $scope.TalkersResource = $resource(API_ENDPOINT + "/participant" + "?Channel=" + new_channel);
     });
 
+    $scope.FileCountdown = function () {
+        var poll = function () {
+            $timeout(function () {
+                if ($scope.file_upload > 0) {
+                    $scope.file_upload -= 1;
+                    poll();
+                }
+            }, 1000);
+        };
+        poll();
+    }
+
     $scope.chatMessageKeyPressed = function (keyEvent) {
         if ((keyEvent.which === 13) && (!$scope.posting)) {
             $scope.posting = true;
@@ -33,7 +45,7 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', functi
             // If this is the /file command
             if (message_text.substring(0, 5) == '/file') {
             }
-            
+
             var message = {
                 // encodeURIComponent() doesn't encode single quotes, which are a problem
                 // for API Gateway.
@@ -47,6 +59,15 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', functi
                 $scope.chatMessage = null;
                 $scope.posting = false;
                 document.getElementById("chat-message-input").focus();
+
+                // This needs to be more specific.
+                if ((response.fields !== undefined) &&
+                    (response.fields.AWSAccessKeyId !== undefined)) {
+                    $scope.file_upload = response.lifetime;
+                    $scope.file_upload_token = response;
+                    $scope.FileCountdown();
+                }
+
                 $rootScope.$emit('serverMessage', response.server_messages);
                 $rootScope.$emit('eventMessageRefresh');
             });
