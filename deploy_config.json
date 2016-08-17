@@ -49,6 +49,7 @@
         {
             "Service": [ "cloudformation" ],
             "Name": "Update JavaScript constants files",
+            "Conditions": [ "StackChanged" ],
             "Code": [
                 "api_id = cloudformation.describe_stack_resource(StackName='{{STACKNAME}}', LogicalResourceId='API')['StackResourceDetail']['PhysicalResourceId']",
                 "fp = open('static-content/assets/js/constants.js','w')",
@@ -61,7 +62,7 @@
         {
             "Service": [ "apigateway", "cloudformation" ],
             "Name": "Deploying API Gateway stage.",
-            "Only": [ "update-stack" ],
+            "Conditions": [ "StackChanged" ],
             "Code": [
                 "api_id = cloudformation.describe_stack_resource(StackName='{{STACKNAME}}', LogicalResourceId='API')['StackResourceDetail']['PhysicalResourceId']",
                 "apigateway.create_deployment(restApiId=api_id, stageName='Main')"

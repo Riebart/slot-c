@@ -67,6 +67,10 @@ def prologue(args):
     else:
         config['StackParams'] = []
 
+    # Initialize an empty conditions member, this'll get filled as we move along,
+    # and checked by epilogue steps.
+    config['Conditions'] = set()
+
     return (config, boto3.client('cloudformation'))
 
 def deploy_lambda_code(config, args, cfn):
@@ -118,7 +122,7 @@ def epilogue(Config, Args, Cfn):
         for e in Config['CustomEpilogue']:
             # Skip if the stage specifies a list of StackOps that it
             # should be run with.
-            if 'Only' in e and args.subcommand not in e['Only']:
+            if 'Conditions' in e and not set(e['Conditions']).issubset(config['Conditions']):
                 print "   SKIPPING step:", e['Name']
             else:
                 print "   Performing step:", e['Name']
@@ -188,22 +192,32 @@ def create_stack(config, args, cfn):
     # Create the stack with the stack name, template body file, parameters
     resp = cfn.create_stack(**template_kwargs(config))
     print json.dumps(resp, indent=4)
+    config['Conditions'].add('StackChanged')
+    return True
 
 def update_stack(config, args, cfn):
-    resp = cfn.update_stack(**template_kwargs(config))
-    print json.dumps(resp, indent=4)
+    if not args.epilogue_only:
+        try:
+            resp = cfn.update_stack(**template_kwargs(config))
+            config['Conditions'].add('StackChanged')
+            print json.dumps(resp, indent=4)
+        except Exception as e:
+            if e.response['Error']['Message'] == 'No updates are to be performed.':
+                print "Stack matches current CloudFormation template, no CLoudFormation updates performed."
+                config['Conditions'].add('NoStackChanges')
+            else:
+                raise(e)
+    else:
+        print "Skipping cloudformation step"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""
     Create or update a stack with appropriate static content in the S3 bucket and priming DynamoDB table items
     """)
+    parser.add_argument("--deploy-config", default="deploy-config.json", required=False,
+                        help="Filename of the JSON deployment configuration file")
 
     subparsers = parser.add_subparsers()
-    nop_parser = subparsers.add_parser("no-stack-op", help="Perform only epilogue functions on an existing stack.")
-    nop_parser.add_argument("--stack-name", default=None, required=True,
-                            help="Stack name to update with new template, code, and static content.")
-    nop_parser.set_defaults(stack_parameters=None)
-    nop_parser.set_defaults(callback=no_stack_op, subcommand="no-stack-op")
 
     create_parser = subparsers.add_parser("create-stack", help="Create a new stack with an optional given stack name and parameters.")
     create_parser.add_argument("--stack-name", default=None, required=False,
@@ -217,8 +231,10 @@ if __name__ == "__main__":
                                help="Stack name to update with new template, code, and static content.")
     update_parser.add_argument("--stack-parameters", default=None, action=JSONArg,
                                help="Parameters for stack update/creation, given as a JSON dictionary of keys and string values. If a value is null, then the previous value is used.")
-    update_parser.add_argument("--no-epilogue", default=False, action='store_true',
-                               help="Do not perform epilogue operations, only perform CloudFormation update operation.")
+    update_parser.add_argument("--epilogue-only", default=False, required=False, action='store_true',
+                               help="Only perform epilogue operations, skipping CloudFormation operations")
+    update_parser.add_argument("--cloudformation-only", default=False, required=False, action='store_true',
+                               help="Do not perform epilogue operations, only perform CloudFormation operations (if possible).")
     update_parser.set_defaults(callback=update_stack, subcommand="update-stack")
 
     args = parser.parse_args()
@@ -237,8 +253,8 @@ if __name__ == "__main__":
 
     print "Waiting for stack to be green..."
     if wait_for_green_stack(config['StackName'], cfn):
-        if args.subcommand == "update-stack" and args.no_epilogue:
-            print "Skipping epilogue"
+        if args.subcommand == 'update-stack' and args.cloudformation_only:
+            print "Skipping epilogue..."
         else:
             print "Performing epilogue..."
             epilogue(config, args, cfn)

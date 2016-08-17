@@ -26,8 +26,9 @@ To update an existing stack:
 python deploy.py update-stack --stack-name <StackName>
 ```
 
-To only perform epilogue operations (Update Lamda code, push S3 files, etc...):
+To explicitly only perform epilogue operations (Update Lamda code, push S3 files, etc...) even when a Cloudformation update is available, use `--epilogue-only`.
+Note that when the `update-stack` operation is performed, and the stack requires no updates, the end result is approximately equivalent to `--epilogue-only`.
 
 ```
-python deploy.py no-stack-op --stack-name <StackName>
+python deploy.py update-stack --stack-name <StackName> --epilogue-only
 ```
