@@ -1,10 +1,46 @@
-myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$timeout', function ($scope, $rootScope, $resource, $timeout) {
+myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$http', '$timeout', function ($scope, $rootScope, $resource, $http, $timeout) {
 
     // Hold the number of seconds until the file upload token expires.
-    $scope.file_upload = 0;
-    $scope.file_upload_token = null;
+    $scope.file_upload = '';
     $scope.fileUpload = function () {
-        alert('1');
+        if (document.getElementById("file-upload").files.length == 0) {
+            return;
+        }
+
+        var message = {
+            // encodeURIComponent() doesn't encode single quotes, which are a problem
+            // for API Gateway.
+            channel: $rootScope.channel,
+            participant: $rootScope.userName,
+            message: '/file ' + document.getElementById("file-upload").files[0].type + ' ' + document.getElementById("file-upload").files[0].name
+        };
+        console.log(message);
+
+        $scope.MessagesResource.save(message, function (response) {
+            if ((response.fields !== undefined) &&
+                (response.fields.AWSAccessKeyId !== undefined)) {
+                $scope.file_upload = '';
+
+                var fd = new FormData();
+                for (var k in response.fields) {
+                    fd.append(k, response.fields[k]);
+                }
+                //fd.append('Content-Type', document.getElementById("file-upload").files[0].type);
+                fd.append('file', document.getElementById("file-upload").files[0]);
+                $http({
+                    method: 'POST',
+                    url: response.url,
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity,
+                    data: fd
+                }).then(function success(response) { console.log('success'); console.log(response); },
+                function failure(response) { console.log('failure'); console.log(response); }
+                );
+
+                $rootScope.$emit('serverMessage', response.server_messages);
+                $rootScope.$emit('eventMessageRefresh');
+            }
+        });
     };
 
     $rootScope.$on("chatting", function () {
@@ -44,6 +80,9 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$time
 
             // If this is the /file command
             if (message_text.substring(0, 5) == '/file') {
+                $scope.file_upload = 'select';
+                $scope.posting = false;
+                return;
             }
 
             var message = {
@@ -56,18 +95,8 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$time
             console.log(message);
 
             $scope.MessagesResource.save(message, function (response) {
-                $scope.chatMessage = null;
                 $scope.posting = false;
                 document.getElementById("chat-message-input").focus();
-
-                // This needs to be more specific.
-                if ((response.fields !== undefined) &&
-                    (response.fields.AWSAccessKeyId !== undefined)) {
-                    $scope.file_upload = response.lifetime;
-                    $scope.file_upload_token = response;
-                    $scope.FileCountdown();
-                }
-
                 $rootScope.$emit('serverMessage', response.server_messages);
                 $rootScope.$emit('eventMessageRefresh');
             });

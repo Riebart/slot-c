@@ -22,13 +22,22 @@ class FileCmd(SlashCommand):
     @staticmethod
     def do(Event, Channel, Participant, Message):
         # Maximum S3 object key length is 1024 bytes, so just keep this reasonable.
-        file_name = "-" + Message[-256:] if Message != None else ".bin"
+        try:
+            content_type, file_name_fill = Message.split(' ',1)
+        except:
+            return None
+
+        file_name = "-" + file_name_fill[-256:]
         object_key = 'uploads/%s%s' % ( str(uuid.uuid1())[:8].replace('-',''), file_name)
         post = s3.generate_presigned_post(Bucket=Event['S3Bucket'],
                                           Key=object_key,
+                                          Fields={'Content-Type': content_type},
+                                          Conditions=[{'Content-Type': content_type}],
                                           ExpiresIn=upload_token_lifetime)
         post.update({'lifetime': upload_token_lifetime})
-        return (post, ["File upload token generated", json.dumps(post)])
+        return (post, ["File upload token generated",
+                       "Final object URL: %s%s" % (post['url'], object_key),
+                       json.dumps(post)])
     
     @staticmethod
     def help():

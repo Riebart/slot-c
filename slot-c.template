@@ -1241,7 +1241,20 @@
     },
     "StaticContentBucket": {
       "Type": "AWS::S3::Bucket",
-      "Properties": {},
+      "Properties": {
+       "CorsConfiguration" : {
+        "CorsRules" : [
+          {
+           "AllowedHeaders" : [ "*" ],
+            "AllowedMethods" : [ "GET", "PUT", "POST", "HEAD" ],
+            "AllowedOrigins" : [ "*" ],
+            "ExposedHeaders" : [],
+            "Id" : "BlanketRule",
+            "MaxAge" : 3000
+          }
+        ]
+       }
+      },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
           "id": "f79935c8-d275-4935-b878-dcb6a5e911bb"

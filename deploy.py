@@ -203,7 +203,7 @@ def update_stack(config, args, cfn):
             print json.dumps(resp, indent=4)
         except Exception as e:
             if e.response['Error']['Message'] == 'No updates are to be performed.':
-                print "Stack matches current CloudFormation template, no CLoudFormation updates performed."
+                print "Stack matches current CloudFormation template, no CloudFormation updates performed."
                 config['Conditions'].add('NoStackChanges')
             else:
                 raise(e)
