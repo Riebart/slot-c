@@ -128,7 +128,7 @@
                            id="chat-message-input"
                            placeholder="Save your brains, enter your user name">
                 </div>
-                <div ng-show="file_upload == 'select'">
+                <div ng-show="file_upload.status == 'select'">
                     <form style="float:left;">
                         <label style="float:left;">
                             Select a file:&nbsp;&nbsp;
@@ -136,6 +136,18 @@
                         <input type="file" id="file-upload" style="float:left;" />
                         <a href="" ng-click="fileUpload()" style="float:left;">Upload</a>
                     </form>
+                    <br /><br />
+                </div>
+                <div ng-show="file_upload.status == 'in_progress'">
+                    <label style="float:left;color:yellow">Upload in progres... {{file_upload.percent}}% ({{file_upload.rate / 1024}} KiB/s)</label>
+                    <br /><br />
+                </div>
+                <div ng-show="file_upload.status == 'success'">
+                    <label style="float:left;color:darkseagreen">Upload successful!</label>
+                    <br /><br />
+                </div>
+                <div ng-show="file_upload.status == 'failure'">
+                    <label style="float:left;color:darkred">Upload failed</label>
                     <br /><br />
                 </div>
                 <p>Type <i>/help</i> to see a list of supported slash-commands.</p>

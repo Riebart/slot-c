@@ -1,7 +1,9 @@
 myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$http', '$timeout', function ($scope, $rootScope, $resource, $http, $timeout) {
 
     // Hold the number of seconds until the file upload token expires.
-    $scope.file_upload = '';
+    $scope.file_upload = {};
+    $scope.file_upload.status = 'idle';
+
     $scope.fileUpload = function () {
         if (document.getElementById("file-upload").files.length == 0) {
             return;
@@ -19,23 +21,39 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$http
         $scope.MessagesResource.save(message, function (response) {
             if ((response.fields !== undefined) &&
                 (response.fields.AWSAccessKeyId !== undefined)) {
-                $scope.file_upload = '';
 
                 var fd = new FormData();
                 for (var k in response.fields) {
                     fd.append(k, response.fields[k]);
                 }
-                //fd.append('Content-Type', document.getElementById("file-upload").files[0].type);
                 fd.append('file', document.getElementById("file-upload").files[0]);
-                $http({
-                    method: 'POST',
-                    url: response.url,
-                    headers: { 'Content-Type': undefined },
-                    transformRequest: angular.identity,
-                    data: fd
-                }).then(function success(response) { console.log('success'); console.log(response); },
-                function failure(response) { console.log('failure'); console.log(response); }
-                );
+
+                $scope.file_upload.status = 'in_progress';
+                $scope.file_upload.percent = 0;
+                $scope.file_upload.rate = 0;
+                $scope.file_upload.start = new Date;
+
+                var xhr = new XMLHttpRequest;
+                xhr.upload.onprogress = function (e) {
+                    t = new Date;
+                    percent = (100.0 * e.loaded) / e.total;
+                    rate = 100.0 * e.loaded / (t - $scope.file_upload.start) / 1024;
+
+                    // Truncate them to two decimal places
+                    $scope.file_upload.percent = Math.round(100 * percent) / 100;
+                    $scope.file_upload.rate = Math.round(100 * rate) / 100;
+                };
+
+                xhr.upload.onload = function (e) {
+                    $scope.file_upload.status = 'success';
+                };
+
+                xhr.upload.onerror = function (e) {
+                    $scope.file_upload.status = 'failure';
+                };
+
+                xhr.open('POST', response.url);
+                xhr.send(fd);
 
                 $rootScope.$emit('serverMessage', response.server_messages);
                 $rootScope.$emit('eventMessageRefresh');
@@ -59,18 +77,6 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$http
         $scope.TalkersResource = $resource(API_ENDPOINT + "/participant" + "?Channel=" + new_channel);
     });
 
-    $scope.FileCountdown = function () {
-        var poll = function () {
-            $timeout(function () {
-                if ($scope.file_upload > 0) {
-                    $scope.file_upload -= 1;
-                    poll();
-                }
-            }, 1000);
-        };
-        poll();
-    }
-
     $scope.chatMessageKeyPressed = function (keyEvent) {
         if ((keyEvent.which === 13) && (!$scope.posting)) {
             $scope.posting = true;
@@ -79,8 +85,9 @@ myApp.controller('chatMessageCtrl', ['$scope', '$rootScope', '$resource', '$http
             console.log('Sending Message: ' + $scope.chatMessage);
 
             // If this is the /file command
-            if (message_text.substring(0, 5) == '/file') {
-                $scope.file_upload = 'select';
+            if ((message_text.substring(0, 5) == '/file') && 
+                ($scope.file_upload.status != 'in_progress')) {
+                $scope.file_upload.status = 'select';
                 $scope.posting = false;
                 return;
             }
