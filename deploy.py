@@ -27,7 +27,7 @@ class JSONArg(argparse.Action):
 
 def s3_domain(s3):
     if isinstance(s3, str) or isinstance(s3, unicode):
-        retion = s3
+        region = s3
     else:
         region = s3._client_config.region_name
     
