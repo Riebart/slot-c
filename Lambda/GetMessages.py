@@ -131,6 +131,7 @@ def handler(event, context):
 
     try:
         query_target, truncated, messages = ddb_cache.get(channel, start_ts, (event,))
+        print query_target
     except Exception as e:
         return {'messages': [], 'error': 'error querying table', 'repr': repr(e)}
     else:

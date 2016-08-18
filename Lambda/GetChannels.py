@@ -14,6 +14,7 @@ class CacheController:
         return (time.time() > (self.last_update_time + self.CacheTime))
     
     def update_value(self, value):
+        print "Updating cache from DynamoDB"
         self.value = value
         self.last_update_time = time.time()
         return self.value

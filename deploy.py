@@ -12,6 +12,10 @@ import argparse
 import tempfile
 import boto3
 
+# TODO There's poor discipline here with where boto3 clients are created, that should be fixed.
+# - Possible solution: A dict at the top where all of them are kept, and shared.
+logs = boto3.client('logs')
+
 class JSONArg(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         try:
@@ -100,6 +104,32 @@ def deploy_lambda_code(config, args, cfn):
             awsl.update_alias(FunctionName=phys_id,
                               Name=func_def['Alias'],
                               FunctionVersion=resp['Version'])
+        
+        if 'CloudWatchLogsRetention' in func_def:
+            allowed_durations = [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
+            
+            # Create the log group, otherwise we can't set the retention policy.
+            try:
+                logs.create_log_group(logGroupName='/aws/lambda/%s' % phys_id)
+            except Exception as e:
+                # It might already exist, and that's OK.
+                if e.response['Error']['Code'] != 'ResourceAlreadyExistsException':
+                    raise e
+            
+            try:
+                n_days = int(func_def['CloudWatchLogsRetention'])
+            except:
+                print "    Unable to parse retention policy as an integer: %s" % repr(func_def['CloudWatchLogsRetention'])
+            else:
+                if n_days == 0:
+                    print "    Setting retention policy to 'Never Expire'"
+                    logs.delete_retention_policy(logGroupName='/aws/lambda/%s' % phys_id)
+                elif n_days not in allowed_durations:
+                    print "    Specified retention duration not in allowed set: %s" % repr(allowed_durations)
+                else:
+                    print "    Setting retention policy to %d days" % n_days
+                    logs.put_retention_policy(logGroupName='/aws/lambda/%s' % phys_id,
+                                              retentionInDays=n_days)
 
 def custom_epilogue(Epilogue, Config):
     try:
@@ -117,7 +147,7 @@ def epilogue(Config, Args, Cfn):
     if 'LambdaFunctions' in Config:
         deploy_lambda_code(Config, Args, Cfn)
     
-    if 'CustomEpilogue' in Config:
+    if 'CustomEpilogue' in Config and not (Args.subcommand == 'update-stack' and Args.no_custom_epilogue):
         print "Performing custom epilogue steps."
         for e in Config['CustomEpilogue']:
             # Skip if the stage specifies a list of StackOps that it
@@ -196,7 +226,7 @@ def create_stack(config, args, cfn):
     return True
 
 def update_stack(config, args, cfn):
-    if not args.epilogue_only:
+    if not args.no_cloudformation:
         try:
             resp = cfn.update_stack(**template_kwargs(config))
             config['Conditions'].add('StackChanged')
@@ -231,10 +261,12 @@ if __name__ == "__main__":
                                help="Stack name to update with new template, code, and static content.")
     update_parser.add_argument("--stack-parameters", default=None, action=JSONArg,
                                help="Parameters for stack update/creation, given as a JSON dictionary of keys and string values. If a value is null, then the previous value is used.")
-    update_parser.add_argument("--epilogue-only", default=False, required=False, action='store_true',
+    update_parser.add_argument("--no-cloudformation", default=False, required=False, action='store_true',
                                help="Only perform epilogue operations, skipping CloudFormation operations")
-    update_parser.add_argument("--cloudformation-only", default=False, required=False, action='store_true',
+    update_parser.add_argument("--no-epilogue", default=False, required=False, action='store_true',
                                help="Do not perform epilogue operations, only perform CloudFormation operations (if possible).")
+    update_parser.add_argument("--no-custom-epilogue", default=False, required=False, action='store_true',
+                               help="Only perform epilogue operations, skipping CloudFormation operations")
     update_parser.set_defaults(callback=update_stack, subcommand="update-stack")
 
     args = parser.parse_args()
@@ -253,7 +285,7 @@ if __name__ == "__main__":
 
     print "Waiting for stack to be green..."
     if wait_for_green_stack(config['StackName'], cfn):
-        if args.subcommand == 'update-stack' and args.cloudformation_only:
+        if args.subcommand == 'update-stack' and args.no_epilogue:
             print "Skipping epilogue..."
         else:
             print "Performing epilogue..."

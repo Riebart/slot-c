@@ -14,35 +14,40 @@
                 [ "Lambda/GetMessages.py", "index.py" ]
             ],
             "Publish": true,
-            "Alias": "Deployed"
+            "Alias": "Deployed",
+            "CloudWatchLogsRetention": 3
         },
         "PostMessage": {
             "CodeFiles": [
                 [ "Lambda/PostMessage.py", "index.py" ]
             ],
             "Publish": true,
-            "Alias": "Deployed"
+            "Alias": "Deployed",
+            "CloudWatchLogsRetention": 3
         },
         "GetParticipants": {
             "CodeFiles": [
                 [ "Lambda/GetParticipants.py", "index.py" ]
             ],
             "Publish": true,
-            "Alias": "Deployed"
+            "Alias": "Deployed",
+            "CloudWatchLogsRetention": 3
         },
         "PostParticipant": {
             "CodeFiles": [
                 [ "Lambda/PostParticipant.py", "index.py" ]
             ],
             "Publish": true,
-            "Alias": "Deployed"
+            "Alias": "Deployed",
+            "CloudWatchLogsRetention": 3
         },
         "GetChannels": {
             "CodeFiles": [
                 [ "Lambda/GetChannels.py", "index.py" ]
             ],
             "Publish": true,
-            "Alias": "Deployed"
+            "Alias": "Deployed",
+            "CloudWatchLogsRetention": 3
         }
     },
     "CustomEpilogue": [
