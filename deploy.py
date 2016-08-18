@@ -12,9 +12,10 @@ import argparse
 import tempfile
 import boto3
 
-# TODO There's poor discipline here with where boto3 clients are created, that should be fixed.
-# - Possible solution: A dict at the top where all of them are kept, and shared.
-logs = boto3.client('logs')
+aws_clients = {'logs': boto3.client('logs'),
+               's3': boto3.client('s3'),
+               'cloudformation': boto3.client('cloudformation'),
+               'lambda': boto3.client('lambda')}
 
 class JSONArg(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -75,11 +76,11 @@ def prologue(args):
     # and checked by epilogue steps.
     config['Conditions'] = set()
 
-    return (config, boto3.client('cloudformation'))
+    return (config, aws_clients['cloudformation'])
 
 def deploy_lambda_code(config, args, cfn):
     print "Deploying Lambda code..."
-    awsl = boto3.client('lambda')
+    awsl = aws_clients['lambda']
     for func_name, func_def in config['LambdaFunctions'].iteritems():
         print "    Depoying code to logical function '%s'" % func_name
         res = cfn.describe_stack_resource(StackName=config['StackName'],
@@ -110,7 +111,7 @@ def deploy_lambda_code(config, args, cfn):
             
             # Create the log group, otherwise we can't set the retention policy.
             try:
-                logs.create_log_group(logGroupName='/aws/lambda/%s' % phys_id)
+                aws_clients['logs'].create_log_group(logGroupName='/aws/lambda/%s' % phys_id)
             except Exception as e:
                 # It might already exist, and that's OK.
                 if e.response['Error']['Code'] != 'ResourceAlreadyExistsException':
@@ -123,18 +124,20 @@ def deploy_lambda_code(config, args, cfn):
             else:
                 if n_days == 0:
                     print "    Setting retention policy to 'Never Expire'"
-                    logs.delete_retention_policy(logGroupName='/aws/lambda/%s' % phys_id)
+                    aws_clients['logs'].delete_retention_policy(logGroupName='/aws/lambda/%s' % phys_id)
                 elif n_days not in allowed_durations:
                     print "    Specified retention duration not in allowed set: %s" % repr(allowed_durations)
                 else:
                     print "    Setting retention policy to %d days" % n_days
-                    logs.put_retention_policy(logGroupName='/aws/lambda/%s' % phys_id,
+                    aws_clients['logs'].put_retention_policy(logGroupName='/aws/lambda/%s' % phys_id,
                                               retentionInDays=n_days)
 
 def custom_epilogue(Epilogue, Config):
     try:
         for svc in Epilogue['Service']:
-            exec("%s = boto3.client('%s')" % (svc, svc))
+            if svc not in aws_clients:
+                aws_clients[svc] = boto3.client(svc)
+            exec("%s = aws_clients['%s']" % (svc, svc))
         for c in Epilogue['Code']:
             exec(c.replace('{{STACKNAME}}', Config['StackName']))
         return True
@@ -174,7 +177,7 @@ def template_kwargs(config):
         
         # The body is too large, so upload it as an S3 object, and deploy by
         # URL.
-        s3 = boto3.client('s3')
+        s3 = aws_clients['s3']
         s3_key = "%s.%d" % (config['StackName'], int(time.time()))
         s3.put_object(Bucket=bucket_name,
                       Key=s3_key,
